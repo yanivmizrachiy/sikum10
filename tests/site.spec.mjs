@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { PDFDocument } from "pdf-lib";
 
 test("all canonical headings, news and booklet order", async ({ page }) => {
   const errors = [];
@@ -116,6 +117,39 @@ for (const width of [320, 360, 390, 430, 768, 1440]) {
     }
   });
 }
+
+test("320px mobile links are comfortable touch targets", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/");
+  const targets = await page.locator(".nav-strip a:visible, .table-link:visible").evaluateAll(elements =>
+    elements.map(element => ({
+      text: (element.textContent || "").trim(),
+      height: element.getBoundingClientRect().height
+    }))
+  );
+  expect(targets.length).toBeGreaterThan(10);
+  for (const target of targets) {
+    expect(target.height, target.text).toBeGreaterThanOrEqual(43.9);
+  }
+});
+
+test("print preview renders real A4 portrait pages without unpublished photos", async ({ page }) => {
+  const unauthorized = [];
+  page.on("request", request => {
+    if (request.url().includes("/content/captures/")) unauthorized.push(request.url());
+  });
+  await page.goto("/");
+  await page.emulateMedia({ media: "print" });
+  const pdfBytes = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+  const document = await PDFDocument.load(pdfBytes);
+  expect(document.getPageCount()).toBeGreaterThanOrEqual(5);
+  for (const pdfPage of document.getPages()) {
+    const { width, height } = pdfPage.getSize();
+    expect(Math.abs(width - 595.28)).toBeLessThan(1);
+    expect(Math.abs(height - 841.89)).toBeLessThan(1);
+  }
+  expect(unauthorized).toEqual([]);
+});
 
 test("reduced motion disables rotating emblem", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
