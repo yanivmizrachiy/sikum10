@@ -10,7 +10,7 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
     await expect(page.locator("#" + id)).toBeVisible();
   }
   await expect(page.locator("#news article")).toHaveCount(3);
-  await expect(page.locator("#coming tbody tr")).toHaveCount(10);
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--mobile tbody tr")).toHaveCount(10);
