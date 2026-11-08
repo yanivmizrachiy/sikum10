@@ -193,7 +193,7 @@ tbody tr:nth-child(even){background:#f9fbfa}
   #main > div > .section .section__head {padding-inline:0}
   #main > div > .section .section__rule,
   #main > div > .section .section__intro {margin-inline:0;padding-inline:0}
-  #main > div > .nav-strip,#main > div > .container {display:none!important}
+  #main > div > .nav-strip,#main > div > .container:not(.section) {display:none!important}
   .task-table-block {break-inside:auto}
   .task-table-block__title {break-after:avoid}
   table {break-inside:auto}
