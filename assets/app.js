@@ -98,7 +98,7 @@ function drawTable(headings, rows, caption, widths) {
 function check(data) {
   if (!data || data.edition?.number !== 10 || data.edition?.date !== "2026-11-08")
     throw Error("Invalid edition identity");
-  const expected = { news: 3, events: 10, curriculum: 10, courses: 10, tasks: 6, model: 8 };
+  const expected = { news: 3, events: 11, curriculum: 10, courses: 10, tasks: 6, model: 8 };
   for (const [field, count] of Object.entries(expected)) {
     if (!Array.isArray(data[field]) || data[field].length !== count)
       throw Error("Invalid section: " + field);
@@ -211,10 +211,14 @@ function coming(root, items) {
     if (e.url) details.append(sourceLink(e.url, "לפרטים"));
     return [date, topic, details];
   });
-  body.append(drawTable(
+  const table = drawTable(
     ["תאריך", "האירוע ומספר מצפ״ן", "שעה ופרטים"],
     rows, "אירועי נובמבר 2026", [24, 42, 34]
-  ));
+  );
+  table.querySelectorAll("tbody tr").forEach((row, i) => {
+    if (items[i]?.emphasis === "priority") row.classList.add("event--priority");
+  });
+  body.append(table);
   root.append(section);
 }
 function courses(root, items, newsItems) {

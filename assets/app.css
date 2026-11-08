@@ -120,3 +120,8 @@ tbody tr:nth-child(even){background:#f9fbfa}
   .table-frame--desktop{display:block!important}
   .table-frame--mobile{display:none!important}
 }
+
+/* Editorial priority is driven only by an explicit canonical event flag. */
+#coming tr.event--priority td{background:#e5f3e9;border-bottom-color:#9cc7b0}
+#coming tr.event--priority td:nth-child(2) strong{color:#07513b;font-size:clamp(17px,1.8vw,20px);font-weight:900;line-height:1.55}
+#coming tr.event--priority .date-strong{color:#07513b;font-weight:900}

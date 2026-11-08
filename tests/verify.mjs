@@ -19,12 +19,26 @@ test("canonical edition identity and publication gate", () => {
   assert.equal(data.permissions.showCaptureImages, false);
   assert.equal(data.permissions.publicSiteApproved, false);
 });
+test("browser section counts stay aligned with canonical data", () => {
+  const expectedSource = app.match(/const expected\s*=\s*\{([^}]+)\}/)?.[1];
+  assert.ok(expectedSource, "Runtime section guard must exist");
+  for (const field of ["news", "events", "curriculum", "courses", "tasks", "model"]) {
+    const n = expectedSource.match(new RegExp("\\b" + field + "\\s*:\\s*(\\d+)\\b"));
+    assert.ok(n, "Runtime guard missing " + field);
+    assert.equal(Number(n[1]), data[field].length, field + " data count differs from runtime guard");
+  }
+});
+
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
-  assert.equal(data.events.length, 10);
+  assert.equal(data.events.length, 11);
   assert.equal(data.courses.length, 10);
   assert.equal(data.curriculum.length, 10);
   assert.equal(data.model.length, 8);
+  assert.ok(data.events.some(e => e.date === "10.11.2026" && e.time === "18:00" && e.title === "מפגש הדרכה שני לקראת מבחן תנופה" && e.url === null));
+  assert.equal(data.events.filter(e => e.emphasis === "priority").length, 1);
+  assert.match(app, /items\[i\]\?\.emphasis === "priority"/);
+  assert.match(css, /#coming tr\.event--priority td/);
   assert.equal(data.news[0].id, "tnufa");
   assert.equal(data.news[1].id, "training");
   assert.equal(data.news[2].id, "resources");

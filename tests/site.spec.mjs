@@ -10,7 +10,17 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
     await expect(page.locator("#" + id)).toBeVisible();
   }
   await expect(page.locator("#news article")).toHaveCount(3);
-  await expect(page.locator("#coming tbody tr")).toHaveCount(10);
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+  const priority = page.locator("#coming tbody tr.event--priority");
+  await expect(priority).toHaveCount(1);
+  await expect(priority).toContainText("מפגש הדרכה שני לקראת מבחן תנופה");
+  const highlight = await priority.locator("td").nth(1).locator("strong").evaluate(node => ({
+    color: getComputedStyle(node).color,
+    size: parseFloat(getComputedStyle(node).fontSize)
+  }));
+  expect(highlight.color).toBe("rgb(7, 81, 59)");
+  expect(highlight.size).toBeGreaterThanOrEqual(17);
+
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--mobile tbody tr")).toHaveCount(10);
