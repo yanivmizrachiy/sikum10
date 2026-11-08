@@ -87,6 +87,10 @@ tbody tr:nth-child(even){background:var(--tint)}
 .course-number{color:var(--accent)}
 #coming .date-strong,.ltr{white-space:nowrap}
 .grade-cell{font-weight:800}
+tbody tr.row-featured,tbody tr.row-featured:nth-child(even){background:#fff1b8}
+tbody tr.row-featured td{border-block:2px solid var(--orange);font-weight:600}
+tbody tr.row-featured td:first-child{border-inline-start:8px solid var(--orange)}
+.pill{display:block;width:max-content;background:var(--orange);color:#fff;font:800 12px/1 var(--sans);letter-spacing:.06em;padding:5px 11px;border-radius:99px;margin:0 0 6px}
 .group-head{font:900 1.05rem/1.4 var(--serif);text-align:right;padding:10px 12px;border-bottom:0}
 tbody tr.group-row{background:transparent}
 .grade--7{color:var(--grade7);background:var(--grade7-bg)}

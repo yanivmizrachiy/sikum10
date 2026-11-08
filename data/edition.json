@@ -113,13 +113,14 @@
     {
       "date": "17.11.2026",
       "day": "שלישי",
-      "time": "14:00–19:00 לפי היומן; טעון אימות מול הפלייר",
+      "time": "14:00–19:00; טעון אימות מול הפלייר",
       "title": "כנס רכזי המתמטיקה העל־יסודי — פסג״ה מודיעין",
       "course": "207516",
       "details": "הרשמה לכנס הרכזים בפסג״ה מודיעין, מספר פתרון למידה 207516; שעות האירוע טרם אומתו מול הפלייר הרשמי.",
       "verifiedTime": null,
       "status": "time-unverified",
-      "url": "https://www.google.com/calendar/event?eid=OWM0aGQ1MDE4cmlkOXN2OG40bDZ2dmZxMnMgeWFuaXZtaXo3N0Bt"
+      "url": "https://www.google.com/calendar/event?eid=OWM0aGQ1MDE4cmlkOXN2OG40bDZ2dmZxMnMgeWFuaXZtaXo3N0Bt",
+      "highlight": "כנס רכזים"
     },
     {
       "date": "18.11.2026",
@@ -149,7 +150,7 @@
       "time": "19:00–21:30",
       "title": "המפגש הבא בהשתלמות בינה מלאכותית ו־ModEL בהוראת מתמטיקה ז׳–ח׳",
       "course": "201590",
-      "details": "מפגש מס׳ 4, על פי היומן.",
+      "details": "מפגש מס׳ 4.",
       "verifiedTime": "19:00–21:30",
       "status": "verified",
       "url": "https://www.google.com/calendar/event?eid=dmg2cGhkdXBvNjNiZjE4ZTJqYTJjcmZlamtfMjAyNjExMjJUMTcwMDAwWiB5YW5pdm1pejc3QG0"

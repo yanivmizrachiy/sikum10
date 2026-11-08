@@ -54,6 +54,12 @@ test("unverified submission windows are always flagged", () => {
 test("coming table has date, event, course number, time and link columns", () => {
   assert.match(app, /\["תאריך", "האירוע", "מצפ״ן", "שעה", "קישור"\]/);
 });
+test("coordinators conference is featured and no calendar attribution text remains", () => {
+  const conference = data.events.filter(e => e.highlight);
+  assert.equal(conference.length, 1);
+  assert.equal(conference[0].course, "207516");
+  assert.ok(!/היומן/.test(JSON.stringify(data.events.map(e => [e.time, e.details]))));
+});
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
   assert.equal(data.events.length, 10);

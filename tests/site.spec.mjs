@@ -16,6 +16,8 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
   }
   await expect(page.locator("#news article")).toHaveCount(3);
   await expect(page.locator("#coming .table-frame--desktop tbody tr")).toHaveCount(10);
+  await expect(page.locator("#coming .table-frame--desktop .row-featured")).toHaveCount(1);
+  await expect(page.locator("#coming .table-frame--desktop .row-featured")).toContainText("207516");
   await expect(page.locator("#coming .table-frame--desktop th")).toHaveText(["תאריך", "האירוע", "מצפ״ן", "שעה", "קישור"]);
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);

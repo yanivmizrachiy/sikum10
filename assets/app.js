@@ -78,6 +78,7 @@ function drawTable(headings, rows, caption, widths) {
   const tbody = make("tbody");
   for (const row of rows) {
     const tr = make("tr");
+    if (row.rowClass) tr.className = row.rowClass;
     if (!Array.isArray(row)) {
       tr.className = "group-row";
       const th = make("th", "group-head " + cssGrade(row.grade), row.heading);
@@ -226,6 +227,7 @@ function eventTime(e) {
 }
 function eventTitle(e) {
   const topic = make("div");
+  if (e.highlight) topic.append(make("span", "pill", e.highlight));
   topic.append(make("strong", null, e.title));
   if (e.status === "proposed" && !/טעון אישור/.test(e.details || ""))
     topic.append(make("p", "subtle", "מועד מוצע, טעון אישור"));
@@ -244,13 +246,14 @@ function eventDate(e, compact) {
 }
 function coming(root, items) {
   const { section, body } = titleBar("coming", 2, "מה צפוי?", "תאריך, שם ההשתלמות המלא, מספר מצפ״ן, שעה וקישור — ללא שמות מרצים");
-  const full = items.map(e => [
+  const featured = (row, e) => Object.assign(row, { rowClass: e.highlight ? "row-featured" : "" });
+  const full = items.map(e => featured([
     eventDate(e),
     eventTitle(e),
     e.course ? make("strong", "course-number", e.course) : make("span", "subtle", "—"),
     eventTime(e),
     e.url ? sourceLink(e.url, "לפרטים") : make("span", "subtle", "ללא קישור")
-  ]);
+  ], e));
   const desktop = drawTable(
     ["תאריך", "האירוע", "מצפ״ן", "שעה", "קישור"],
     full, "אירועי נובמבר 2026", [13, 40, 11, 18, 18]
@@ -262,7 +265,7 @@ function coming(root, items) {
     const when = make("div");
     when.append(make("div", null, eventTime(e)));
     if (e.url) when.append(sourceLink(e.url, "לפרטים"));
-    return [eventDate(e, true), topic, when];
+    return featured([eventDate(e, true), topic, when], e);
   });
   const mobile = drawTable(
     ["תאריך", "האירוע ומצפ״ן", "שעה וקישור"],
