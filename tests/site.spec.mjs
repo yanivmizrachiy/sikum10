@@ -245,3 +245,26 @@ test("Ayelet Krespins November 10 workshop is prominent and source-accurate", as
   expect(actual.fontSize).toBeGreaterThanOrEqual(18);
   expect(actual.color).toBe("rgb(7, 90, 58)");
 });
+
+test("A4 screen cover and navigation never overlap or clip text", async ({ page }) => {
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+    const boxes = await page.evaluate(() => {
+      const box = selector => {
+        const el = document.querySelector(selector);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return {x:r.x,y:r.y,left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+      };
+      return {page:box("#main > div"), hero:box("#main .hero"), nav:box("#main .nav-strip"), title:box("#main .hero h1"),
+        subtitle:box("#main .hero__subtitle"), siteWidth:document.documentElement.scrollWidth};
+    });
+    console.log("COVER_LAYOUT", width, JSON.stringify(boxes));
+    expect(boxes.nav.top, "navigation must follow cover at " + width).toBeGreaterThanOrEqual(boxes.hero.bottom - 1);
+    expect(boxes.title.left, "cover heading left boundary at " + width).toBeGreaterThanOrEqual(boxes.page.left - 1);
+    expect(boxes.title.right, "cover heading right boundary at " + width).toBeLessThanOrEqual(boxes.page.right + 1);
+    expect(boxes.siteWidth, "no horizontal overflow at " + width).toBeLessThanOrEqual(width + 2);
+  }
+});
