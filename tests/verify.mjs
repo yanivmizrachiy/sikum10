@@ -14,6 +14,7 @@ test("canonical edition identity and publication gate", () => {
   assert.match(data.edition.displayDate, /יום ראשון.*כ״ח בחשוון תשפ״ז.*8\.11\.2026/);
   assert.equal(data.edition.title, "פותחים שבוע");
   assert.equal(data.edition.greeting, "שבוע טוב");
+  assert.equal(data.edition.region, "הדרכה במחוז ירושלים והעיר ירושלים – מנח״י");
   assert.ok(!/פרשת|שבת שלום/.test(JSON.stringify(data.edition)));
   assert.equal(data.permissions.distributionApproved, false);
   assert.equal(data.permissions.showCaptureImages, false);
@@ -21,7 +22,7 @@ test("canonical edition identity and publication gate", () => {
 });
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
-  assert.equal(data.events.length, 10);
+  assert.equal(data.events.length, 11);
   assert.equal(data.courses.length, 10);
   assert.equal(data.curriculum.length, 10);
   assert.equal(data.model.length, 8);
@@ -29,6 +30,12 @@ test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news[1].id, "training");
   assert.equal(data.news[2].id, "resources");
   assert.ok(!data.events.some(e => /מרצה:|בהנחיית/.test(e.title)));
+  assert.equal(data.events[1].id, "tnufa-guidance");
+  assert.equal(data.events[1].date, "10.11.2026");
+  assert.equal(data.events[1].time, "18:00");
+  assert.ok(data.events[1].title.includes("איילת קריספין"));
+  assert.equal(data.events[1].url, null);
+  assert.equal(data.events[1].course, null);
   assert.ok(data.events.some(e => e.date === "17.11.2026" && e.status === "time-unverified" && e.verifiedTime === null));
   assert.ok(data.events.some(e => e.date === "18.11.2026" && e.status === "proposed"));
   assert.ok(data.curriculum.some(x => x.grade === "ט׳" && x.track === "פריסה רגילה"));
