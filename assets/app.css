@@ -214,3 +214,12 @@ tbody tr:nth-child(even){background:#f9fbfa}
   .table-frame {break-inside:auto}
   .event--tnufa-guidance {background:#e0f3e8!important}
 }
+
+/* Editorial mobile legibility: text remains readable without zooming or sideways scrolling. */
+@media (max-width:730px) {
+  #main > div > .section .table-frame--mobile td {font-size:16px;line-height:1.55}
+  #main > div > .section .table-frame--mobile th {font-size:14px;line-height:1.5}
+  #main > div > .section .table-frame--mobile .subtle {font-size:15px}
+  #coming td {font-size:16px;line-height:1.55}
+  #coming th {font-size:14px;line-height:1.5}
+}

@@ -124,6 +124,31 @@ for (const width of [320, 360, 390, 430, 768, 1440]) {
   });
 }
 
+test("mobile tables retain at least 16px content text at 320 and 390", async ({ page }) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({width, height:900});
+    await page.goto("/");
+    await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+    const metrics = await page.evaluate(() => {
+      const size = selector => {
+        const el = document.querySelector(selector);
+        if (!el) throw Error("Missing text element: " + selector);
+        return parseFloat(getComputedStyle(el).fontSize);
+      };
+      return {
+        scheduled: size("#coming tbody td"),
+        teaching: size("#teaching .table-frame--mobile tbody td"),
+        tasks: size("#model .table-frame--mobile tbody td"),
+        overflow: document.documentElement.scrollWidth - window.innerWidth
+      };
+    });
+    for (const [area, size] of Object.entries(metrics)) {
+      if (area !== "overflow") expect(size, area + " at " + width).toBeGreaterThanOrEqual(16);
+    }
+    expect(metrics.overflow, "horizontal overflow at " + width).toBeLessThanOrEqual(2);
+  }
+});
+
 test("320px mobile links are comfortable touch targets", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto("/");
@@ -244,6 +269,27 @@ test("Ayelet Krespins November 10 workshop is prominent and source-accurate", as
   }));
   expect(actual.fontSize).toBeGreaterThanOrEqual(18);
   expect(actual.color).toBe("rgb(7, 90, 58)");
+});
+
+test("200% zoom keeps a usable 320px-equivalent mobile layout", async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 900 });
+  await page.goto("/");
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  const metrics = await page.evaluate(() => {
+    const hero = document.querySelector("#main .hero").getBoundingClientRect();
+    const nav = document.querySelector("#main .nav-strip").getBoundingClientRect();
+    return {
+      viewport: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      heroBottom: hero.bottom,
+      navTop: nav.top
+    };
+  });
+  expect(metrics.navTop, "zoomed navigation must follow cover").toBeGreaterThanOrEqual(metrics.heroBottom - 1);
+  expect(metrics.scrollWidth, "200% zoom must not introduce horizontal scroll").toBeLessThanOrEqual(metrics.viewport + 2);
+  await page.locator("#main .nav-strip a[href='#model']").focus();
+  await expect(page.locator("#main .nav-strip a[href='#model']")).toBeFocused();
 });
 
 test("A4 screen cover and navigation never overlap or clip text", async ({ page }) => {
