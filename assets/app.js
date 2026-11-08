@@ -244,10 +244,24 @@ function teaching(root, items) {
     e.subjects,
     sourceLink(e.url, "לפריסה")
   ]);
-  body.append(drawTable(
+  const desktopTable = drawTable(
     ["שכבה", "מסלול", "תחום", "הנושאים ותתי־הנושאים", "מקור"],
     rows, "שכבה ז׳ — כחול · ח׳ — ירוק־כחול · ט׳ — בורדו", [11, 17, 17, 42, 13]
-  ));
+  );
+  desktopTable.classList.add("table-frame--desktop");
+  const compactRows = items.map(e => {
+    const grade = make("div");
+    append(grade, make("strong", null, e.grade), make("div", "subtle", e.track));
+    const subjects = make("div");
+    append(subjects, make("strong", null, e.domain), make("div", null, e.subjects));
+    return [{grade:e.grade,element:grade}, subjects, sourceLink(e.url,"לפריסה")];
+  });
+  const mobileTable = drawTable(
+    ["שכבה ומסלול", "נושאים ותתי־נושאים", "מקור"],
+    compactRows, "פריסות נובמבר · טבלת נייד", [26, 58, 16]
+  );
+  mobileTable.classList.add("table-frame--mobile");
+  body.append(desktopTable, mobileTable);
   root.append(section);
 }
 function deadline(task) {
@@ -268,10 +282,25 @@ function taskTable(tasks) {
       t.kind, due, sourceLink(t.sourceUrl, "למשימה")
     ];
   });
-  return drawTable(
+  const desktop = drawTable(
     ["שכבה", "משימה שיש לבצע ולהגיש", "סוג", "חלון ומועד הגשה", "ModEL"],
     rows, "טבלה מסכמת בתחילת מדור ModEL — 6 משימות מקור", [10, 31, 13, 32, 14]
   );
+  desktop.classList.add("table-frame--desktop");
+  const compact = tasks.map(t=>{
+    const name = make("div");
+    append(name, make("strong", null, t.title), make("div", "subtle", t.kind));
+    const due = make("div");
+    append(due, make("strong", "date-strong", deadline(t)),
+      make("div", "subtle", tracks(t)), sourceLink(t.sourceUrl,"למשימה"));
+    return [{grade:t.grade,element:make("strong",null,t.grade)},name,due];
+  });
+  const mobile = drawTable(["שכבה","משימה וסוג","הגשה וקישור"],
+    compact, "טבלת הגשות · מותאמת לנייד", [13,44,43]);
+  mobile.classList.add("table-frame--mobile");
+  const result = make("div");
+  append(result,desktop,mobile);
+  return result;
 }
 function taskDetail(task, edition) {
   const detail = make("details", "task");
