@@ -215,10 +215,15 @@ function coming(root, items) {
   ));
   root.append(section);
 }
-function courses(root, items) {
+function courses(root, items, newsItems) {
+  const training = newsItems.find(item => item.id === "training");
+  if (!training || !training.fullName || !training.course)
+    throw Error("Course title missing from canonical data");
+  const synchronous = items.filter(item => item.mode === "סינכרוני").length;
+  const asynchronous = items.length - synchronous;
   const { section, body } = titleBar(
     "courses", 3, "מפגשי ההשתלמות",
-    "דגשים בעדכון תוכנית הלימודים בחטיבת הביניים במתמטיקה · מצפ״ן 208094 · המועדים מוצעים בסילבוס"
+    training.fullName + " · מצפ״ן " + training.course + " · המועדים מוצעים בסילבוס"
   );
   const rows = items.map((e, i) => {
     const date = make("div");
@@ -229,7 +234,7 @@ function courses(root, items) {
   });
   body.append(drawTable(
     ["מפגש ותאריך", "סוג", "הנושא ותיאורו", "מקור"],
-    rows, "8 מפגשים סינכרוניים ו־2 א־סינכרוניים", [20, 20, 46, 14]
+    rows, synchronous + " מפגשים סינכרוניים ו־" + asynchronous + " א־סינכרוניים", [20, 20, 46, 14]
   ));
   root.append(section);
 }
@@ -356,7 +361,12 @@ function booklet(data) {
     make("span", "booklet__tag", "חוברת נלווית · סיכום שבועי מספר 10"),
     make("h3", null, "משימות החובה וההערכה ב־ModEL — מועדים והגשות"),
     make("p", null, "חוברת חדשה לאורך לכיתות ז׳–ח׳, המבוססת על המצגת והצילומים המקוריים."),
-    make("p", "subtle", "6 משימות · 36 שאלות · 6 פריטי הקשר · 43 חלקי צילום מופו במקור.")
+    make("p", "subtle",
+      data.tasks.length + " משימות · " +
+      data.tasks.reduce((total, t) => total + t.questionCount, 0) + " שאלות · " +
+      (data.tasks.flatMap(t => t.items).length - data.tasks.reduce((total, t) => total + t.questionCount, 0)) +
+      " פריטי הקשר · " + data.tasks.flatMap(t => t.items.flatMap(i => i.parts)).length +
+      " חלקי צילום מופו במקור.")
   );
   article.append(head);
   const nav = make("nav", "nav-strip");
@@ -386,8 +396,12 @@ function model(root, data) {
     "בראש המדור: טבלה מסכמת של כל המשימות ומועדי ההגשה. אחריה החוברת הדיגיטלית החדשה לאורך."
   );
   body.append(taskTable(data.tasks));
+  const assessments = data.tasks.filter(t => t.kind === "הערכה");
+  const missingDates = data.tasks.filter(t => t.kind === "חובה" && t.missingDeadline).length;
   body.append(make("div", "notice",
-    "מועדי ההערכה הראשונה המעודכנים: כיתה ח׳ עד 13.11.2026; כיתה ז׳ עד 20.11.2026. ארבע משימות החובה האחרות ללא מועד הגשה מאומת."));
+    "מועדי ההערכה הראשונה המעודכנים: " +
+    assessments.map(t => "כיתה " + t.grade + " עד " + deadline(t)).join("; ") +
+    ". " + missingDates + " משימות חובה ללא מועד הגשה מאומת."));
   body.append(booklet(data));
   const heading = make("h3", "section__title", "הנחיות נוספות ב־ModEL");
   heading.style.marginBlock = "30px 14px";
@@ -414,12 +428,12 @@ async function main() {
     navigation(root);
     news(root, data.news);
     coming(root, data.events);
-    courses(root, data.courses);
+    courses(root, data.courses, data.news);
     teaching(root, data.curriculum);
     model(root, data);
     const notes = make("div", "container");
     notes.append(make("p", "subtle",
-      "מהדורת 8.11.2026. מידע חסר ומועדים מוצעים אינם מוצגים כמאומתים. כל שינוי בפרסום מותנה בבקרת מקור."));
+      "מהדורת " + data.edition.displayDate + ". מידע חסר ומועדים מוצעים אינם מוצגים כמאומתים. כל שינוי בפרסום מותנה בבקרת מקור."));
     notes.append(sourceLink(data.sources.sheetUrl, "מקור התכנון והבקרה"));
     root.append(notes);
     target.replaceChildren(root);
