@@ -23,7 +23,8 @@
     "photographManifestSha": "e7f033d0dd184ab8015290665f6147b6584b7e80",
     "photographBasePath": "public/content/",
     "photographsLicenseStatus": "requires-distribution-approval",
-    "courseSource": "user-authorized Google Sheet"
+    "courseSource": "user-authorized Google Sheet",
+    "photographCommitSha": "763df45eb6b82e0986832562b3335aedb6ddde17"
   },
   "news": [
     {
