@@ -168,9 +168,8 @@ function navigation(root) {
     inner.append(a);
   });
   nav.append(inner);
-  const hero = root.querySelector(".hero");
-  if (hero) hero.append(nav);
-  else root.append(nav);
+  // Keep navigation after the cover, never nested inside it on narrow screens.
+  root.append(nav);
 }
 function news(root, items) {
   const { section, body } = titleBar("news", 1, "מה חדש השבוע?", "שלושה עדכונים למורי המתמטיקה בחטיבת הביניים");
