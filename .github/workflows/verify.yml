@@ -1,0 +1,27 @@
+name: Verify Summary 10
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check application JavaScript syntax
+        run: node --check assets/app.js
+      - name: Check source data and rendering contract
+        run: node --test tests/verify.mjs
+      - name: Verify absence of distributed capture media
+        run: |
+          if find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.pdf' \) -not -path './.git/*' | grep . ; then
+            echo "Unapproved media files found in summary repository"
+            exit 1
+          fi
+          echo "No source photographs or PDFs are distributed by this repository"
