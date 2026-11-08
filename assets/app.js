@@ -4,7 +4,8 @@ const DATA_FILE = "./data/edition.json";
 function make(tag, className, value) {
   const e = document.createElement(tag);
   if (className) e.className = className;
-  if (value !== undefined && value !== null) e.textContent = String(value);
+  if (value instanceof Node) e.append(value);
+  else if (value !== undefined && value !== null) e.textContent = String(value);
   return e;
 }
 function append(parent, ...children) {
@@ -118,38 +119,43 @@ function check(data) {
     throw Error("Photograph publication not approved");
   return data;
 }
+function issueLabel(edition) {
+  return edition.journal + " / ISSUE " + String(edition.number).padStart(2, "0");
+}
 function cover(root, edition) {
   const header = make("header", "hero");
-  const grid = make("div", "container hero__grid");
-  const prose = make("div");
-  const lines = make("div", "hero__byline");
-  append(lines,
-    make("p", null, edition.field),
-    make("p", null, edition.lead),
-    make("p", null, edition.credit)
-  );
-  append(prose,
-    make("p", "eyebrow", edition.region),
-    make("h1", null, edition.title),
-    make("p", "hero__subtitle", edition.subtitle),
-    make("p", "hero__date", edition.displayDate),
-    lines,
-    make("span", "hero__greeting", edition.greeting)
-  );
-  const emblem = make("div", "emblem");
-  const ring = make("span", "emblem__ring");
-  ring.setAttribute("aria-hidden", "true");
+  const inner = make("div", "container hero__inner");
   const logo = make("img");
   logo.src = "./assets/district-logo.png";
   logo.alt = "סמל מחוז ירושלים";
   logo.loading = "eager";
-  logo.addEventListener("error", () => {
-    logo.hidden = true;
-    emblem.setAttribute("aria-label", "מחוז ירושלים");
-  });
-  append(emblem, ring, logo);
-  append(grid, prose, emblem);
-  header.append(grid);
+  logo.width = 71;
+  logo.height = 71;
+  logo.addEventListener("error", () => { logo.hidden = true; });
+  const issue = make("span", "hero__issue", issueLabel(edition));
+  issue.dir = "ltr";
+  const masthead = make("div", "hero__masthead");
+  append(masthead, make("div", "hero__mark"), issue);
+  masthead.firstChild.append(logo);
+  const title = make("h1");
+  append(title, make("span", null, edition.series),
+    make("span", "hero__number", "מס׳ " + edition.number));
+  const meta = make("div", "hero__meta");
+  const dayLine = make("div", "hero__day");
+  append(dayLine, edition.weekday + " | ");
+  const dateText = make("span", null, fmt(edition.date));
+  dateText.dir = "ltr";
+  dayLine.append(dateText);
+  append(meta, dayLine, make("div", "hero__hebrew", edition.hebrewDate));
+  const credit = make("div", "hero__credit");
+  append(credit,
+    make("div", "hero__eyebrow", edition.field),
+    make("div", "hero__district", edition.region),
+    make("div", "hero__lead", edition.lead),
+    make("div", "hero__writer", edition.credit));
+  append(inner, masthead, title, make("div", "hero__rule"),
+    make("p", "hero__edition", edition.title), meta, credit);
+  header.append(inner);
   root.append(header);
 }
 function navigation(root) {
@@ -196,25 +202,65 @@ function news(root, items) {
   body.append(grid);
   root.append(section);
 }
-function coming(root, items) {
-  const { section, body } = titleBar("coming", 2, "מה צפוי?", "תאריך, שם ההשתלמות המלא ומצפ״ן — ללא שמות מרצים");
-  const rows = items.map(e => {
-    const date = make("div");
+// Clock ranges are left-to-right digits: isolate them so RTL does not print 21:30–19:00.
+function ltr(text) {
+  const span = make("span", "ltr", text);
+  span.dir = "ltr";
+  return span;
+}
+function eventTime(e) {
+  const strong = make("strong");
+  if (e.status === "time-unverified") strong.textContent = "השעה טרם אומתה";
+  else if (/^[0-9]{2}:[0-9]{2}(–[0-9]{2}:[0-9]{2})?$/.test(e.time)) strong.append(ltr(e.time));
+  else strong.textContent = e.time;
+  return strong;
+}
+function eventTitle(e) {
+  const topic = make("div");
+  topic.append(make("strong", null, e.title));
+  if (e.status === "proposed" && !/טעון אישור/.test(e.details || ""))
+    topic.append(make("p", "subtle", "מועד מוצע, טעון אישור"));
+  if (e.details) topic.append(make("p", "subtle", e.details));
+  return topic;
+}
+function eventDate(e, compact) {
+  const date = make("div");
+  if (compact) {
+    append(date, make("strong", "date-strong", e.date.slice(0, 5)),
+      make("div", "subtle", e.day + " · " + e.date.slice(6)));
+  } else {
     append(date, make("strong", "date-strong", e.date), make("div", "subtle", e.day));
-    const topic = make("div");
-    topic.append(make("strong", null, e.title));
-    if (e.course) topic.append(make("div", "subtle course-number", "מצפ״ן / פתרון למידה: " + e.course));
-    if (e.status === "proposed") topic.append(make("p", "subtle", "מועד מוצע, טעון אישור"));
-    const details = make("div");
-    const time = e.status === "time-unverified" ? "השעה טרם אומתה" : e.time;
-    append(details, make("strong", null, time), make("div", "subtle", e.details));
-    if (e.url) details.append(sourceLink(e.url, "לפרטים"));
-    return [date, topic, details];
+  }
+  return date;
+}
+function coming(root, items) {
+  const { section, body } = titleBar("coming", 2, "מה צפוי?", "תאריך, שם ההשתלמות המלא, מספר מצפ״ן, שעה וקישור — ללא שמות מרצים");
+  const full = items.map(e => [
+    eventDate(e),
+    eventTitle(e),
+    e.course ? make("strong", "course-number", e.course) : make("span", "subtle", "—"),
+    eventTime(e),
+    e.url ? sourceLink(e.url, "לפרטים") : make("span", "subtle", "ללא קישור")
+  ]);
+  const desktop = drawTable(
+    ["תאריך", "האירוע", "מצפ״ן", "שעה", "קישור"],
+    full, "אירועי נובמבר 2026", [13, 40, 11, 18, 18]
+  );
+  desktop.classList.add("table-frame--desktop");
+  const compact = items.map(e => {
+    const topic = eventTitle(e);
+    if (e.course) topic.prepend(make("div", "course-number", "מצפ״ן " + e.course));
+    const when = make("div");
+    when.append(make("div", null, eventTime(e)));
+    if (e.url) when.append(sourceLink(e.url, "לפרטים"));
+    return [eventDate(e, true), topic, when];
   });
-  body.append(drawTable(
-    ["תאריך", "האירוע ומספר מצפ״ן", "שעה ופרטים"],
-    rows, "אירועי נובמבר 2026", [24, 42, 34]
-  ));
+  const mobile = drawTable(
+    ["תאריך", "האירוע ומצפ״ן", "שעה וקישור"],
+    compact, "אירועי נובמבר 2026 · טבלת נייד", [19, 50, 31]
+  );
+  mobile.classList.add("table-frame--mobile");
+  body.append(desktop, mobile);
   root.append(section);
 }
 function courses(root, items, newsItems) {
@@ -272,17 +318,20 @@ function teaching(root, items) {
   root.append(section);
 }
 function deadline(task) {
-  if (!task.submission.length) return "מועד הגשה לא אומת";
+  if (!task.submission.length) return "ללא מועד הגשה מאומת";
   return [...new Set(task.submission.map(s => fmt(s.to)))].join(" / ");
 }
+function trackLines(task) {
+  return task.submission.map(s => s.track + ": מ־" + fmt(s.from) + " עד " + fmt(s.to) +
+    (s.verification === "verified" ? "" : " (טעון אימות)"));
+}
 function tracks(task) {
-  if (!task.submission.length) return "לא אומת מועד למשימת חובה";
-  return task.submission.map(s => s.track + ": " + fmt(s.from) + "–" + fmt(s.to)).join(" | ");
+  return trackLines(task).join(" | ");
 }
 function taskTable(tasks) {
   const rows = tasks.map(t => {
     const due = make("div");
-    append(due, make("strong", "date-strong", deadline(t)), make("div", "subtle", tracks(t)));
+    append(due, make("strong", "date-strong", deadline(t)), ...trackLines(t).map(line => make("div", "subtle", line)));
     return [
       { grade: t.grade, element: make("strong", null, t.grade) },
       make("strong", null, t.title),
@@ -299,11 +348,11 @@ function taskTable(tasks) {
     append(name, make("strong", null, t.title), make("div", "subtle", t.kind));
     const due = make("div");
     append(due, make("strong", "date-strong", deadline(t)),
-      make("div", "subtle", tracks(t)), sourceLink(t.sourceUrl,"למשימה"));
+      ...trackLines(t).map(line => make("div", "subtle", line)), sourceLink(t.sourceUrl,"למשימה"));
     return [{grade:t.grade,element:make("strong",null,t.grade)},name,due];
   });
   const mobile = drawTable(["שכבה","משימה וסוג","הגשה וקישור"],
-    compact, "טבלת הגשות · מותאמת לנייד", [13,44,43]);
+    compact, "טבלת הגשות · מותאמת לנייד", [18,40,42]);
   mobile.classList.add("table-frame--mobile");
   const result = make("div");
   append(result,desktop,mobile);
@@ -362,7 +411,7 @@ function booklet(data) {
   article.id = "booklet";
   const head = make("header", "booklet__head");
   append(head,
-    make("span", "booklet__tag", "חוברת נלווית · סיכום שבועי מספר 10"),
+    make("span", "booklet__tag", "חוברת נלווית · שבוע טוב מס׳ 10"),
     make("h3", null, "משימות החובה וההערכה ב־ModEL — מועדים והגשות"),
     make("p", null, "חוברת חדשה לאורך לכיתות ז׳–ח׳, המבוססת על המצגת והצילומים המקוריים."),
     make("p", "subtle",
@@ -421,6 +470,13 @@ function model(root, data) {
   body.append(grid);
   root.append(section);
 }
+function footer(root, edition) {
+  const tail = make("footer", "footer");
+  const inner = make("div", "container");
+  inner.append(make("p", null, edition.series + " מס׳ " + edition.number + " · " + edition.region));
+  tail.append(inner);
+  root.append(tail);
+}
 async function main() {
   const target = document.getElementById("main");
   try {
@@ -437,9 +493,10 @@ async function main() {
     model(root, data);
     const notes = make("div", "container");
     notes.append(make("p", "subtle",
-      "מהדורת " + data.edition.displayDate + ". מידע חסר ומועדים מוצעים אינם מוצגים כמאומתים. כל שינוי בפרסום מותנה בבקרת מקור."));
+      "מהדורת " + data.edition.weekday + " " + fmt(data.edition.date) + " · " + data.edition.hebrewDate + ". מידע חסר ומועדים מוצעים אינם מוצגים כמאומתים. כל שינוי בפרסום מותנה בבקרת מקור."));
     notes.append(sourceLink(data.sources.sheetUrl, "מקור התכנון והבקרה"));
     root.append(notes);
+    footer(root, data.edition);
     target.replaceChildren(root);
   } catch (err) {
     console.error("Summary 10 validation failed", err);

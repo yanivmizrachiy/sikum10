@@ -83,7 +83,7 @@ if (results.filter(Boolean).length !== 43) throw Error("Incomplete original phot
 const css = await readFile(join(root, "assets/private-booklet.css"), "utf8");
 function page(body, name) {
   return '<section class="page ' + (name || "") + '">' + body +
-    '<div class="footer">פותחים שבוע · סיכום שבועי מספר 10 · ' +
+    '<div class="footer">' + escape(data.edition.series) + ' מס׳ ' + data.edition.number + ' · פותחים שבוע · ' +
     escape(data.edition.region) + '</div></section>';
 }
 const book = [];
@@ -91,11 +91,11 @@ book.push(page(
   '<p class="mast">' + escape(data.edition.region) + '</p>' +
   '<h1>פותחים שבוע</h1><h2>חוברת המשימות ב־ModEL</h2>' +
   '<p class="sub">משימות החובה וההערכה · כיתות ז׳–ח׳</p>' +
-  '<p class="date">' + escape(data.edition.displayDate) + '</p>' +
+  '<p class="date">' + escape(data.edition.weekday + " | " + date(data.edition.date) + " | " + data.edition.hebrewDate) + '</p>' +
   '<div class="line"></div>' +
   '<p class="credit">' + escape(data.edition.lead) + '<br>' +
   escape(data.edition.credit) + '</p>' +
-  '<p class="greeting">' + escape(data.edition.greeting) + '</p>',
+  '',
   "hero"
 ));
 const rows = data.tasks.flatMap(task => {
@@ -105,7 +105,8 @@ const rows = data.tasks.flatMap(task => {
     '<a href="' + escape(task.sourceUrl) + '">למשימה</a>' : "";
   return options.map(option => '<tr><td class="' + color + '">' + escape(task.grade) +
     '</td><td>' + escape(task.kind) + '</td><td>' + escape(task.title) +
-    '</td><td>' + escape(option?.track || "—") + '</td><td>' + date(option?.from) +
+    '</td><td>' + escape(option?.track || "—") +
+    (option && option.verification !== "verified" ? '<br><small>טעון אימות</small>' : "") + '</td><td>' + date(option?.from) +
     '</td><td><strong>' + date(option?.to) + '</strong></td><td>' + link + '</td></tr>');
 }).join("");
 book.push(page(

@@ -11,13 +11,48 @@ const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 test("canonical edition identity and publication gate", () => {
   assert.equal(data.edition.number, 10);
   assert.equal(data.edition.date, "2026-11-08");
-  assert.match(data.edition.displayDate, /יום ראשון.*כ״ח בחשוון תשפ״ז.*8\.11\.2026/);
+  assert.equal(data.edition.weekday, "יום ראשון");
+  assert.equal(data.edition.hebrewDate, "כ״ח בחשוון תשפ״ז");
+  assert.equal(data.edition.series, "שבוע טוב");
+  assert.ok(!/סיכום שבועי/.test(app + html + JSON.stringify(data.edition)), "headline must not say סיכום שבועי");
   assert.equal(data.edition.title, "פותחים שבוע");
-  assert.equal(data.edition.greeting, "שבוע טוב");
   assert.ok(!/פרשת|שבת שלום/.test(JSON.stringify(data.edition)));
   assert.equal(data.permissions.distributionApproved, false);
   assert.equal(data.permissions.showCaptureImages, false);
   assert.equal(data.permissions.publicSiteApproved, false);
+});
+test("edition date, weekday and Hebrew date agree with the calendar", () => {
+  const he = iso => new Date(iso + "T12:00:00Z").toLocaleDateString("he-IL-u-ca-hebrew",
+    { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  assert.match(he(data.edition.date), /^יום ראשון, 28 בחשוון 5787$/);
+  assert.equal(data.edition.weekday, "יום ראשון");
+  const weekday = iso => new Date(iso + "T12:00:00Z").toLocaleDateString("he-IL", { weekday: "long", timeZone: "UTC" });
+  assert.equal("יום " + weekday(data.edition.date).replace(/^יום /, ""), data.edition.weekday);
+  for (const e of data.events) {
+    const [d, m, y] = e.date.split(".");
+    assert.equal(weekday(y + "-" + m + "-" + d).replace(/^יום /, ""), e.day, "weekday mismatch for " + e.date);
+  }
+  const nov25 = data.events.find(e => e.date === "25.11.2026");
+  assert.match(he("2026-11-25"), /15 בכסלו/);
+  assert.match(nov25.details, /ט״ו בכסלו/);
+});
+test("cover wording mirrors earlier summaries and has no parasha or weekend blessing", () => {
+  assert.equal(data.edition.field, "מתמטיקה · חטיבות הביניים");
+  assert.equal(data.edition.region, "הדרכה במחוז ירושלים והעיר ירושלים – מנח״י");
+  assert.equal(data.edition.lead, "בהובלת איילת קריספין");
+  assert.equal(data.edition.credit, "יניב רז | מדריך מחוזי חט״ב בעיר ירושלים");
+  assert.match(app, /issueLabel\(edition\)/);
+  assert.ok(!/פרשת|שבת שלום/.test(app + html + JSON.stringify(data.edition)));
+  // Edition facts live in data/edition.json only: the static page may not repeat the weekly figures.
+  assert.ok(!/<(header|footer)\b/.test(html), "static HTML must not hard-code masthead or footer text");
+});
+test("unverified submission windows are always flagged", () => {
+  assert.match(app, /s\.verification === "verified" \? "" : " \(טעון אימות\)"/);
+  const g7 = data.tasks.find(t => t.id === "g7-assessment-1");
+  assert.equal(g7.submission.filter(s => s.verification !== "verified").length, 1);
+});
+test("coming table has date, event, course number, time and link columns", () => {
+  assert.match(app, /\["תאריך", "האירוע", "מצפ״ן", "שעה", "קישור"\]/);
 });
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
