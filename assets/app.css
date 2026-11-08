@@ -130,6 +130,18 @@ tbody tr:nth-child(even){background:#f9fbfa}
   --sheet-padding:clamp(14px, 3vw, 42px);
 }
 #main > div {width:min(100%,var(--a4-width));margin-inline:auto;background:var(--paper)}
+#main > div {display:flex;flex-direction:column;align-items:stretch}
+#main > div > .hero,
+#main > div > .section,
+#main > div > .nav-strip {flex:0 0 auto;float:none;clear:both;position:relative}
+#main > div > .nav-strip {display:block;width:100%!important;margin:0;min-width:0}
+#main > div > .hero .hero__grid {grid-template-columns:minmax(0,1fr) minmax(100px,155px);padding-inline:clamp(16px,2.5vw,28px)}
+#main > div > .hero .hero__grid > div:first-child {min-width:0}
+#main > div > .hero h1 {font-size:clamp(3.1rem,6.6vw,5.8rem);overflow-wrap:normal;word-break:keep-all}
+@media(max-width:730px){
+  #main > div > .hero .hero__grid {grid-template-columns:minmax(0,1fr);padding-inline:clamp(15px,5vw,24px)}
+  #main > div > .hero h1 {font-size:clamp(3rem,13vw,5rem)}
+}
 #main > div > .hero,
 #main > div > .section,
 #main > div > .nav-strip,
