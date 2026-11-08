@@ -22,7 +22,7 @@ jobs:
       - name: Run mobile, desktop, source and safety QA
         run: npm run test:ui
       - name: Save screenshots and failure diagnostics
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: sikum10-browser-qa
