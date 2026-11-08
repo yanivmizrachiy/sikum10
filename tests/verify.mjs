@@ -59,6 +59,11 @@ test("authentic updated submission dates with explicit unknowns", () => {
   assert.equal(g7.submission.find(s => s.track === "עמ״ט").verification, "requires-confirmation");
   assert.equal(data.tasks.filter(t => t.kind === "חובה" && t.missingDeadline && t.submission.length === 0).length, 4);
   assert.ok(data.tasks.every(t => t.kind === "חובה" || t.submission.length === 2));
+  const assessments = data.tasks.filter(t => t.kind === "הערכה");
+  assert.equal(assessments.length, 2);
+  assert.ok(assessments.every(t => t.photoTrackCaution?.includes("עמ״ט")));
+  assert.ok(assessments.every(t => t.photoTrackCaution?.includes("לא")));
+
 });
 test("safe markup and a real summary table before the booklet", () => {
   assert.match(html, /lang="he" dir="rtl"/);
