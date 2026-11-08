@@ -142,7 +142,9 @@ for (const task of data.tasks) {
     '<h2>' + escape(task.title) + '</h2>' +
     '<p class="meta">משימה מקורית · ' + task.questionCount + ' שאלות</p>' +
     '<div class="terms"><p><strong>חלונות ביצוע והגשה:</strong><br>' + range +
-    '</p><p>' + sourceLink + '</p></div>',
+    '</p>' +
+    (task.photoTrackCaution ? '<p class="warning">' + escape(task.photoTrackCaution) + '</p>' : '') +
+    '<p>' + sourceLink + '</p></div>',
     "task-cover"
   ));
   const taskPhotos = results.filter(record => record.task.id === task.id);
