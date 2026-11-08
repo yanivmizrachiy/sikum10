@@ -322,6 +322,8 @@ function taskDetail(task, edition) {
     body.append(make("p", null, "מועדי הגשה לפי מסלול: " + tracks(task)));
     if (task.submission.some(s => s.verification === "requires-confirmation"))
       body.append(make("p", "task__warning", "מועד מסלול עמ״ט בכיתה ז׳ טעון אימות פרטני לפני הפצה."));
+    if (task.photoTrackCaution)
+      body.append(make("p", "task__warning", task.photoTrackCaution));
   } else {
     body.append(make("p", "task__warning",
       "מועד ההגשה למשימה זו אינו מופיע במניפסט המקורי. אין להסיק תאריך מהחודש שבו פורסמה."));
