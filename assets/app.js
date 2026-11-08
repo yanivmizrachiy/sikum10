@@ -211,10 +211,14 @@ function coming(root, items) {
     if (e.url) details.append(sourceLink(e.url, "לפרטים"));
     return [date, topic, details];
   });
-  body.append(drawTable(
+  const table = drawTable(
     ["תאריך", "האירוע ומספר מצפ״ן", "שעה ופרטים"],
     rows, "אירועי נובמבר 2026", [24, 42, 34]
-  ));
+  );
+  table.querySelectorAll("tbody tr").forEach((row, i) => {
+    if (items[i]?.emphasis === "priority") row.classList.add("event--priority");
+  });
+  body.append(table);
   root.append(section);
 }
 function courses(root, items, newsItems) {
