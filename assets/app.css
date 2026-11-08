@@ -120,3 +120,97 @@ tbody tr:nth-child(even){background:#f9fbfa}
   .table-frame--desktop{display:block!important}
   .table-frame--mobile{display:none!important}
 }
+
+/* Summary 10 acceptance: contiguous portrait A4 sheets, no gaps or decorative shadows.
+   Narrow screens reflow as readable vertical sheets instead of scaling an A4 bitmap. */
+:root {
+  --a4-width:210mm;
+  --a4-height:297mm;
+  --sheet-divider:#075861;
+  --sheet-padding:clamp(14px, 3vw, 42px);
+}
+#main > div {width:min(100%,var(--a4-width));margin-inline:auto;background:var(--paper)}
+#main > div {display:flex;flex-direction:column;align-items:stretch}
+#main > div > .hero,
+#main > div > .section,
+#main > div > .nav-strip {flex:0 0 auto;float:none;clear:both;position:relative}
+#main > div > .nav-strip {display:block;width:100%!important;margin:0;min-width:0}
+#main > div > .hero .hero__grid {grid-template-columns:minmax(0,1fr) minmax(100px,155px);padding-inline:clamp(16px,2.5vw,28px)}
+#main > div > .hero .hero__grid > div:first-child {min-width:0}
+#main > div > .hero h1 {font-size:clamp(3.1rem,6.6vw,5.8rem);overflow-wrap:normal;word-break:keep-all}
+@media(max-width:730px){
+  #main > div > .hero .hero__grid {grid-template-columns:minmax(0,1fr);padding-inline:clamp(15px,5vw,24px)}
+  #main > div > .hero h1 {font-size:clamp(3rem,13vw,5rem)}
+}
+#main > div > .hero,
+#main > div > .section,
+#main > div > .nav-strip,
+#main > div > .container {width:100%;max-width:none;margin:0}
+#main > div > .hero,
+#main > div > .section {position:relative;border:0;border-radius:0;box-shadow:none;overflow:visible;background:var(--paper)}
+#main > div > .hero {min-height:var(--a4-height);background:linear-gradient(154deg,#fffdf7 0%,#faf4e8 55%,#e9f4f1 100%);display:flex;align-items:center}
+#main > div > .hero .hero__grid {width:100%;min-height:unset;gap:14px}
+#main > div > .section {min-height:var(--a4-height);padding-block:20px}
+#main > div > .hero,
+#main > div > .section,
+#main > div > .nav-strip,
+#main > div > .container {border-bottom:3px solid var(--sheet-divider)}
+#main > div > .container {padding-block:16px}
+#main > div > .section .section__body {padding-inline:var(--sheet-padding)}
+#main > div > .section .section__head {padding-inline:var(--sheet-padding)}
+#main > div > .section .section__intro {padding-inline:var(--sheet-padding)}
+#main > div > .section .section__rule {margin-inline:var(--sheet-padding)}
+#main > div > .nav-strip {min-height:44px}
+#main > div > .nav-strip .container {max-width:100%;width:100%;padding-inline:12px}
+#main > div > .section table {width:100%;table-layout:fixed}
+#main > div > .section .table-frame {max-width:100%;overflow:visible}
+#main > div > .section th,
+#main > div > .section td {overflow-wrap:anywhere;word-break:normal}
+#coming .event--tnufa-guidance {background:#e0f3e8!important}
+#coming .event--tnufa-guidance .event__highlight {display:block;color:#075a3a;font:800 clamp(18px,2vw,24px)/1.35 Heebo,Arial,sans-serif}
+#coming .event--tnufa-guidance td {border-block:2px solid #177d60}
+.task-table-block {margin-block:26px 32px;break-inside:auto}
+.task-table-block__title {font:800 1.3rem/1.4 Heebo,Arial,sans-serif;color:var(--teal);margin:0 0 12px}
+.task-table-block .table-frame {margin-block:10px 16px;break-inside:auto}
+#model .table-frame table thead {display:table-header-group}
+#model .table-frame tr {break-inside:avoid;page-break-inside:avoid}
+#model .model-guide-title {margin-block:30px 14px}
+@media (max-width:730px) {
+  #main > div {width:100%;max-width:100%}
+  #main > div > .hero,
+  #main > div > .section {min-height:0;height:auto}
+  #main > div > .hero .hero__grid {padding-block:42px 34px}
+  #main > div > .section {padding-block:16px 20px}
+  #main > div > .section .section__head,
+  #main > div > .section .section__body {padding-inline:clamp(12px,3.5vw,22px)}
+  #main > div > .section .section__intro {padding-inline:clamp(12px,3.5vw,22px)}
+  #main > div > .section .section__rule {margin-inline:clamp(12px,3.5vw,22px)}
+  #main > div > .section .table-frame--mobile th,
+  #main > div > .section .table-frame--mobile td {font-size:clamp(13px,3.7vw,16px);line-height:1.5;padding:10px 6px}
+  #main > div > .section .table-frame--mobile th {font-size:clamp(12px,3.3vw,14px)}
+  #main > div > .section .table-frame--mobile .table-link {min-height:44px}
+  #coming td,#coming th {font-size:clamp(13px,3.8vw,16px);padding:10px 5px}
+  #coming .event--tnufa-guidance .event__highlight {font-size:clamp(17px,5vw,21px)}
+  #model .task-table-block__title {font-size:20px}
+  #main > div > .section .subtle {font-size:13px}
+}
+@media print {
+  @page {size:A4 portrait;margin:12mm}
+  html,body,#app,#main,#main > div {background:#fff!important;max-width:none;width:100%;margin:0!important;box-shadow:none!important}
+  #main > div > .hero,#main > div > .section {width:100%;min-height:0;padding:0;border:0!important;box-shadow:none;overflow:visible}
+  #main > div > .hero {break-after:page;display:block}
+  #main > div > .hero .hero__grid {padding:12mm 3mm;min-height:225mm}
+  #main > div > .section {break-before:page;break-after:auto}
+  #main > div > .section .section__body,
+  #main > div > .section .section__head {padding-inline:0}
+  #main > div > .section .section__rule,
+  #main > div > .section .section__intro {margin-inline:0;padding-inline:0}
+  #main > div > .nav-strip,#main > div > .container:not(.section) {display:none!important}
+  .task-table-block {break-inside:auto}
+  .task-table-block__title {break-after:avoid}
+  table {break-inside:auto}
+  thead {display:table-header-group}
+  tr {break-inside:avoid;page-break-inside:avoid}
+  .table-frame {break-inside:auto}
+  .event--tnufa-guidance {background:#e0f3e8!important}
+}

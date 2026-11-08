@@ -14,6 +14,7 @@ test("canonical edition identity and publication gate", () => {
   assert.match(data.edition.displayDate, /יום ראשון.*כ״ח בחשוון תשפ״ז.*8\.11\.2026/);
   assert.equal(data.edition.title, "פותחים שבוע");
   assert.equal(data.edition.greeting, "שבוע טוב");
+  assert.equal(data.edition.region, "הדרכה במחוז ירושלים והעיר ירושלים – מנח״י");
   assert.ok(!/פרשת|שבת שלום/.test(JSON.stringify(data.edition)));
   assert.equal(data.permissions.distributionApproved, false);
   assert.equal(data.permissions.showCaptureImages, false);
@@ -21,7 +22,7 @@ test("canonical edition identity and publication gate", () => {
 });
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
-  assert.equal(data.events.length, 10);
+  assert.equal(data.events.length, 11);
   assert.equal(data.courses.length, 10);
   assert.equal(data.curriculum.length, 10);
   assert.equal(data.model.length, 8);
@@ -29,6 +30,12 @@ test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news[1].id, "training");
   assert.equal(data.news[2].id, "resources");
   assert.ok(!data.events.some(e => /מרצה:|בהנחיית/.test(e.title)));
+  assert.equal(data.events[1].id, "tnufa-guidance");
+  assert.equal(data.events[1].date, "10.11.2026");
+  assert.equal(data.events[1].time, "18:00");
+  assert.ok(data.events[1].title.includes("איילת קריספין"));
+  assert.equal(data.events[1].url, null);
+  assert.equal(data.events[1].course, null);
   assert.ok(data.events.some(e => e.date === "17.11.2026" && e.status === "time-unverified" && e.verifiedTime === null));
   assert.ok(data.events.some(e => e.date === "18.11.2026" && e.status === "proposed"));
   assert.ok(data.curriculum.some(x => x.grade === "ט׳" && x.track === "פריסה רגילה"));
@@ -73,7 +80,7 @@ test("safe markup and a real summary table before the booklet", () => {
   assert.match(app, /drawTable\(/);
   assert.ok(app.indexOf("body.append(taskTable(data.tasks))") >= 0);
   assert.ok(app.indexOf("body.append(taskTable(data.tasks))") < app.indexOf("body.append(booklet(data))"));
-  assert.match(app, /p\.showCaptureImages && p\.distributionApproved && p\.publicSiteApproved/);
+  assert.match(app, /edition\.permissions\.showCaptureImages\s*&&\s*edition\.permissions\.distributionApproved\s*&&\s*edition\.permissions\.publicSiteApproved/);
   assert.ok(!/\binnerHTML\s*=/.test(app));
   assert.ok(!/window\.print\(\)/.test(app), "No pretend PDF download while images are unlicensed");
   assert.match(css, /@page\s*\{\s*size:A4 portrait/);
@@ -81,6 +88,12 @@ test("safe markup and a real summary table before the booklet", () => {
   assert.match(css, /\.grade--7/);
   assert.match(css, /\.grade--8/);
   assert.match(css, /\.grade--9/);
+  assert.match(css, /--sheet-divider:#075861/);
+  assert.match(css, /#coming \.event--tnufa-guidance/);
+  assert.match(app, /function tracksTable\(tasks\)/);
+  assert.match(app, /task-table-block/);
+  assert.doesNotMatch(app, /make\("details",\s*"task"\)/);
+  assert.match(app, /items\.map\(item/);
 });
 test("do not embed images from earlier project in public source", () => {
   const root = new URL("../", import.meta.url);

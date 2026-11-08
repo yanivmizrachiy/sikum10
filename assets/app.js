@@ -52,7 +52,7 @@ function titleBar(id, count, heading, description) {
   section.append(body);
   return { section, body };
 }
-function drawTable(headings, rows, caption, widths) {
+function drawTable(headings, rows, caption, widths, rowClasses = []) {
   const frame = make("div", "table-frame");
   const table = make("table");
   if (caption) table.append(make("caption", "table-caption", caption));
@@ -75,8 +75,8 @@ function drawTable(headings, rows, caption, widths) {
   head.append(trHead);
   table.append(head);
   const tbody = make("tbody");
-  for (const row of rows) {
-    const tr = make("tr");
+  for (const [index, row] of rows.entries()) {
+    const tr = make("tr", rowClasses[index] || null);
     for (const item of row) {
       const td = make("td");
       if (item && typeof item === "object" && "grade" in item) {
@@ -98,7 +98,7 @@ function drawTable(headings, rows, caption, widths) {
 function check(data) {
   if (!data || data.edition?.number !== 10 || data.edition?.date !== "2026-11-08")
     throw Error("Invalid edition identity");
-  const expected = { news: 3, events: 10, curriculum: 10, courses: 10, tasks: 6, model: 8 };
+  const expected = { news: 3, events: 11, curriculum: 10, courses: 10, tasks: 6, model: 8 };
   for (const [field, count] of Object.entries(expected)) {
     if (!Array.isArray(data[field]) || data[field].length !== count)
       throw Error("Invalid section: " + field);
@@ -168,7 +168,9 @@ function navigation(root) {
     inner.append(a);
   });
   nav.append(inner);
-  root.append(nav);
+  const hero = root.querySelector(".hero");
+  if (hero) hero.append(nav);
+  else root.append(nav);
 }
 function news(root, items) {
   const { section, body } = titleBar("news", 1, "מה חדש השבוע?", "שלושה עדכונים למורי המתמטיקה בחטיבת הביניים");
@@ -197,12 +199,12 @@ function news(root, items) {
   root.append(section);
 }
 function coming(root, items) {
-  const { section, body } = titleBar("coming", 2, "מה צפוי?", "תאריך, שם ההשתלמות המלא ומצפ״ן — ללא שמות מרצים");
+  const { section, body } = titleBar("coming", 2, "מה צפוי?", "אירועי נובמבר לפי תאריך ושעה · פרטי המקור והאימות");
   const rows = items.map(e => {
     const date = make("div");
     append(date, make("strong", "date-strong", e.date), make("div", "subtle", e.day));
     const topic = make("div");
-    topic.append(make("strong", null, e.title));
+    topic.append(make("strong", e.id === "tnufa-guidance" ? "event__highlight" : null, e.title));
     if (e.course) topic.append(make("div", "subtle course-number", "מצפ״ן / פתרון למידה: " + e.course));
     if (e.status === "proposed") topic.append(make("p", "subtle", "מועד מוצע, טעון אישור"));
     const details = make("div");
@@ -213,7 +215,8 @@ function coming(root, items) {
   });
   body.append(drawTable(
     ["תאריך", "האירוע ומספר מצפ״ן", "שעה ופרטים"],
-    rows, "אירועי נובמבר 2026", [24, 42, 34]
+    rows, "אירועי נובמבר 2026", [24, 42, 34],
+    items.map(e => e.id === "tnufa-guidance" ? "event--tnufa-guidance" : "")
   ));
   root.append(section);
 }
@@ -310,52 +313,63 @@ function taskTable(tasks) {
   return result;
 }
 function taskDetail(task, edition) {
-  const detail = make("details", "task");
-  detail.id = "task-" + task.id;
-  const summary = make("summary");
-  append(summary, make("span", "task__name", task.grade + " · " + task.title),
-    make("span", "task__badge", task.kind));
-  detail.append(summary);
-  const body = make("div", "task__body");
-  body.append(make("p", null, task.questionCount + " שאלות מקור · " + task.kind));
-  if (task.submission.length) {
-    body.append(make("p", null, "מועדי הגשה לפי מסלול: " + tracks(task)));
-    if (task.submission.some(s => s.verification === "requires-confirmation"))
-      body.append(make("p", "task__warning", "מועד מסלול עמ״ט בכיתה ז׳ טעון אימות פרטני לפני הפצה."));
-    if (task.photoTrackCaution)
-      body.append(make("p", "task__warning", task.photoTrackCaution));
-  } else {
-    body.append(make("p", "task__warning",
-      "מועד ההגשה למשימה זו אינו מופיע במניפסט המקורי. אין להסיק תאריך מהחודש שבו פורסמה."));
-  }
-  const source = external(task.sourceUrl, "פתיחת המשימה המקורית ב־ModEL");
-  if (source) body.append(source);
-  // A public commit must never unexpectedly surface source photos: all gates must pass.
-  const p = edition.permissions;
-  const allowPhotos = p.showCaptureImages && p.distributionApproved && p.publicSiteApproved;
-  if (!allowPhotos) {
-    body.append(make("p", "photo-unavailable",
-      "הצילומים המקוריים מופו לפי שאלה וחלק, אך הצגתם והפצתם ממתינות לאישור זכויות ולהשלמת חוברת ההורדה. המשימה המקורית זמינה בקישור ModEL."));
-  } else {
-    const base = "https://raw.githubusercontent.com/" +
-      edition.sources.photographRepo + "/" + edition.sources.photographCommitSha + "/" + edition.sources.photographBasePath;
-    task.items.forEach(item => {
-      const figure = make("figure", "source-photo");
-      item.parts.forEach(part => {
-        const image = make("img");
-        image.src = base + part.file;
-        image.alt = item.label || ("משימה " + task.title + " — שאלה " + item.number);
-        image.width = part.width;
-        image.height = part.height;
-        image.loading = "lazy";
-        figure.append(image);
-      });
-      figure.append(make("figcaption", null, item.label || "שאלה " + item.number));
-      body.append(figure);
-    });
-  }
-  detail.append(body);
-  return detail;
+  const section = make("section", "task-table-block");
+  section.id = "task-" + task.id;
+  section.append(make("h4", "task-table-block__title", task.grade + " · " + task.title));
+  const safe = edition.permissions.showCaptureImages &&
+    edition.permissions.distributionApproved && edition.permissions.publicSiteApproved;
+  const summaryRows = [
+    ["שכבה", task.grade],
+    ["סוג המשימה", task.kind],
+    ["מספר שאלות", String(task.questionCount)],
+    ["חלונות ומועדי הגשה", tracks(task)],
+    ["המשימה המקורית", sourceLink(task.sourceUrl, "פתיחת המשימה ב־ModEL")]
+  ];
+  if (task.photoTrackCaution) summaryRows.push(["הבהרת מסלול", task.photoTrackCaution]);
+  if (task.submission.some(x => x.verification === "requires-confirmation"))
+    summaryRows.push(["בדיקת מסלול", "מסלול עמ״ט טעון אימות פרטני"]);
+  summaryRows.push(["תמונות מקור", safe
+    ? "אישור עקרוני בלבד; צילומים אינם מוטמעים באתר זה"
+    : "הצגה והפצה חסומות; מיפוי נתונים בלבד"]);
+  section.append(drawTable(["פרט", "מידע מאומת"], summaryRows, "פרטי המשימה", [32, 68]));
+  const itemRows = task.items.map(item => {
+    const isContext = String(item.number) === "0";
+    return [
+      isContext ? "הקשר / פתיחה" : "שאלה " + item.number,
+      item.label || (isContext ? "רכיב פתיחה מקורי" : "שאלה מתוך המשימה המקורית"),
+      item.parts.length + " חלק" + (item.parts.length === 1 ? "" : "ים") + " ממופים · הצילום חסום"
+    ];
+  });
+  section.append(drawTable(["סעיף", "תיאור", "מצב מיפוי"], itemRows,
+    "מיפוי השאלות ופריטי ההקשר לפי סדר המקור", [25, 40, 35]));
+  return section;
+}
+function tracksTable(tasks) {
+  const rows = tasks.flatMap(task => {
+    const submissions = task.submission.length ? task.submission : [null];
+    return submissions.map(item => [
+      task.grade, task.title, task.kind,
+      item?.track || "לא צוין מסלול",
+      item ? fmt(item.from) + " – " + fmt(item.to) : "מועד הגשה לא אומת",
+      item?.verification === "requires-confirmation" ? "טעון אימות" :
+        item ? "לפי המקור" : "משימת חובה ללא מועד מאומת",
+      sourceLink(task.sourceUrl, "למקור")
+    ]);
+  });
+  if (rows.length !== 8) throw Error("Expected eight track rows");
+  const desktop = drawTable(
+    ["שכבה", "משימה", "סוג", "מסלול", "חלון הגשה", "אימות", "מקור"],
+    rows, "שמונה שורות מסלול עם חלון הגשה ומצב אימות", [8, 24, 10, 12, 20, 16, 10]
+  );
+  desktop.classList.add("table-frame--desktop");
+  const mobile = drawTable(["משימה", "מסלול וסוג", "מועד וקישור"],
+    rows.map(row => [
+      make("div", null, row[0] + " · " + row[1]),
+      make("div", null, row[2] + " · " + row[3]),
+      append(make("div"), make("strong", null, row[4]), make("div", "subtle", row[5]), row[6])
+    ]), "שמונה שורות מסלול — טבלה מותאמת לנייד", [40, 24, 36]);
+  mobile.classList.add("table-frame--mobile");
+  return append(make("div"), desktop, mobile);
 }
 function booklet(data) {
   const article = make("article", "booklet");
@@ -400,6 +414,7 @@ function model(root, data) {
     "בראש המדור: טבלה מסכמת של כל המשימות ומועדי ההגשה. אחריה החוברת הדיגיטלית החדשה לאורך."
   );
   body.append(taskTable(data.tasks));
+  body.append(tracksTable(data.tasks));
   const assessments = data.tasks.filter(t => t.kind === "הערכה");
   const missingDates = data.tasks.filter(t => t.kind === "חובה" && t.missingDeadline).length;
   body.append(make("div", "notice",
@@ -408,17 +423,23 @@ function model(root, data) {
     ". " + missingDates + " משימות חובה ללא מועד הגשה מאומת."));
   body.append(booklet(data));
   const heading = make("h3", "section__title", "הנחיות נוספות ב־ModEL");
-  heading.style.marginBlock = "30px 14px";
+  heading.classList.add("model-guide-title");
   body.append(heading);
-  const grid = make("div", "learning-grid");
-  data.model.filter(m => m.type !== "חוברת דיגיטלית נלווית").forEach(m => {
-    const card = make("article", "learning-item");
-    append(card, make("h3", null, m.grade + " · " + m.type),
-      make("p", null, m.title), make("p", "subtle", m.description));
-    if (m.url) card.append(sourceLink(m.url, "למקור"));
-    grid.append(card);
-  });
-  body.append(grid);
+  const guidanceRows = data.model.filter(m => m.type !== "חוברת דיגיטלית נלווית").map(m => [
+    m.grade, m.type, make("strong", null, m.title),
+    m.description, m.url ? sourceLink(m.url, "למקור") : make("span", "subtle", "ללא קישור מאומת")
+  ]);
+  const fullGuidance = drawTable(["שכבה", "סוג", "נושא", "פירוט", "מקור"],
+    guidanceRows, "כל ההנחיות הנוספות בטבלה אחת", [13, 20, 19, 37, 11]);
+  fullGuidance.classList.add("table-frame--desktop");
+  const mobileGuidance = drawTable(["שכבה וסוג", "נושא ופירוט", "מקור"],
+    data.model.filter(m => m.type !== "חוברת דיגיטלית נלווית").map(m => [
+      make("div", null, m.grade + " · " + m.type),
+      append(make("div"), make("strong", null, m.title), make("div", null, m.description)),
+      m.url ? sourceLink(m.url, "למקור") : make("span", "subtle", "ללא קישור מאומת")
+    ]), "הנחיות נוספות — טבלת נייד", [26, 56, 18]);
+  mobileGuidance.classList.add("table-frame--mobile");
+  body.append(fullGuidance, mobileGuidance);
   root.append(section);
 }
 async function main() {

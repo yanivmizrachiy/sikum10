@@ -7,7 +7,7 @@
     "date": "2026-11-08",
     "displayDate": "יום ראשון | כ״ח בחשוון תשפ״ז | 8.11.2026",
     "field": "מתמטיקה בחטיבת הביניים",
-    "region": "מחוז ירושלים והעיר ירושלים",
+    "region": "הדרכה במחוז ירושלים והעיר ירושלים – מנח״י",
     "lead": "בהובלת איילת קריספין",
     "credit": "יניב רז | הדרכה מחוזית במתמטיקה, חטיבת הביניים",
     "greeting": "שבוע טוב"
@@ -64,6 +64,18 @@
       "verifiedTime": "19:00–21:30",
       "status": "verified",
       "url": "https://www.google.com/calendar/event?eid=dmg2cGhkdXBvNjNiZjE4ZTJqYTJjcmZlamtfMjAyNjExMDhUMTcwMDAwWiB5YW5pdm1pejc3QG0"
+    },
+    {
+      "date": "10.11.2026",
+      "day": "שלישי",
+      "time": "18:00",
+      "title": "מפגש הדרכה שני לקראת מבחן תנופה — איילת קריספין",
+      "course": null,
+      "details": "הדרכה לרכזים ולמורים. איילת ביקשה שאם רכז או רכזת אינם יכולים להשתתף, המורים ישתתפו במפגש. קישור למפגש לא נמסר.",
+      "verifiedTime": "18:00",
+      "status": "verified",
+      "url": null,
+      "id": "tnufa-guidance"
     },
     {
       "date": "10.11.2026",

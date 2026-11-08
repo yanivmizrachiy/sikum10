@@ -11,12 +11,15 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
     await expect(page.locator("#" + id)).toBeVisible();
   }
   await expect(page.locator("#news article")).toHaveCount(3);
-  await expect(page.locator("#coming tbody tr")).toHaveCount(10);
+  await expect(page.locator("#coming .event--tnufa-guidance")).toContainText("איילת קריספין");
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--mobile tbody tr")).toHaveCount(10);
   await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
-  await expect(page.locator("#booklet details")).toHaveCount(6);
+  await expect(page.locator("#booklet .task-table-block")).toHaveCount(6);
+  await expect(page.locator("#booklet .task-table-block .table-frame")).toHaveCount(12);
+  await expect(page.locator("#model > .section__body > div:nth-child(2) .table-frame--desktop tbody tr")).toHaveCount(8);
   const tableFirst = await page.evaluate(() => {
     const model = document.querySelector("#model");
     return model.querySelector(".table-frame").compareDocumentPosition(model.querySelector("#booklet")) & Node.DOCUMENT_POSITION_FOLLOWING;
@@ -71,29 +74,32 @@ test("every canonical record is faithfully rendered with real source links", asy
     }
   }
 
-  const desktopTasks = page.locator("#model > .section__body .table-frame--desktop tbody tr");
-  const mobileTasks = page.locator("#model > .section__body .table-frame--mobile tbody tr");
-  const details = page.locator("#booklet details");
+  const desktopTasks = page.locator("#model > .section__body > div:first-child .table-frame--desktop tbody tr");
+  const mobileTasks = page.locator("#model > .section__body > div:first-child .table-frame--mobile tbody tr");
+  const taskSections = page.locator("#booklet .task-table-block");
   for (const [index, task] of data.tasks.entries()) {
     for (const row of [desktopTasks.nth(index), mobileTasks.nth(index)]) {
       await expect(row).toContainText(task.title);
       await expect(row).toContainText(task.kind);
       await expect(row.locator("a")).toHaveAttribute("href", task.sourceUrl);
     }
-    await expect(details.nth(index).locator("summary")).toContainText(task.title);
+    await expect(taskSections.nth(index).locator("h4")).toContainText(task.title);
+    await expect(taskSections.nth(index).locator("table")).toHaveCount(2);
+    await expect(taskSections.nth(index).locator(".table-frame:last-child tbody tr")).toHaveCount(task.items.length);
   }
 });
 
 test("source photographs remain permission-gated", async ({ page }) => {
   let unauthorized = [];
   page.on("request", request => {
-    if (request.url().includes("/content/captures/")) unauthorized.push(request.url());
+    if (/\/captures\//.test(request.url())) unauthorized.push(request.url());
   });
   await page.goto("/");
-  await page.locator("#booklet details").first().locator("summary").click();
-  await expect(page.locator("#booklet details").first().locator(".photo-unavailable")).toBeVisible();
+  await expect(page.locator("#booklet .task-table-block")).toHaveCount(6);
+  await expect(page.locator("#booklet .task-table-block").first()).toContainText("הצגה והפצה חסומות");
   expect(unauthorized).toEqual([]);
   await expect(page.locator("#booklet img")).toHaveCount(0);
+  await expect(page.locator("#booklet details")).toHaveCount(0);
 });
 
 for (const width of [320, 360, 390, 430, 768, 1440]) {
@@ -136,10 +142,32 @@ test("320px mobile links are comfortable touch targets", async ({ page }) => {
 test("print preview renders real A4 portrait pages without unpublished photos", async ({ page }) => {
   const unauthorized = [];
   page.on("request", request => {
-    if (request.url().includes("/content/captures/")) unauthorized.push(request.url());
+    if (/\/captures\//.test(request.url())) unauthorized.push(request.url());
   });
   await page.goto("/");
+  // The page's JSON is fetched asynchronously. Wait for all canonical sections before printing.
+  await expect(page.locator("#booklet .task-table-block")).toHaveCount(6);
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+  await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
   await page.emulateMedia({ media: "print" });
+  await page.evaluate(() => document.fonts.ready);
+  const printLayout = await page.evaluate(() => ({
+    mainText: document.querySelector("#main")?.textContent?.length,
+    mainHeight: Math.round(document.querySelector("#main")?.getBoundingClientRect()?.height || 0),
+    bodyHeight: document.body.scrollHeight,
+    sectionCount: document.querySelectorAll("#main > div > .section").length,
+    sections: [...document.querySelectorAll("#main > div > .section")].map(e => ({
+      name:e.id,
+      height:Math.round(e.getBoundingClientRect().height),
+      display:getComputedStyle(e).display,
+      breakBefore:getComputedStyle(e).breakBefore,
+      visibility:getComputedStyle(e).visibility
+    })),
+    paper: [...document.styleSheets].length
+  }));
+  console.log("PRINT_LAYOUT", JSON.stringify(printLayout));
+  expect(printLayout.sectionCount).toBe(5);
+  expect(printLayout.mainText).toBeGreaterThan(6000);
   const pdfBytes = await page.pdf({ preferCSSPageSize: true, printBackground: true });
   const document = await PDFDocument.load(pdfBytes);
   expect(document.getPageCount()).toBeGreaterThanOrEqual(5);
@@ -156,4 +184,87 @@ test("reduced motion disables rotating emblem", async ({ page }) => {
   await page.goto("/");
   const animation = await page.locator(".emblem__ring").evaluate(n => getComputedStyle(n).animationName);
   expect(animation).toBe("none");
+});
+
+test("A4-inspired sheets are contiguous, separated in teal, and mobile text stays readable", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const desk = await page.evaluate(() => {
+    const hero = document.querySelector("#main > div > .hero");
+    const section = document.querySelector("#main > div > .section");
+    const style = getComputedStyle(hero);
+    const sectionStyle = getComputedStyle(section);
+    return {
+      heroWidth: hero.getBoundingClientRect().width,
+      heroHeight: hero.getBoundingClientRect().height,
+      heroBorder: parseFloat(style.borderBottomWidth),
+      heroBorderColor: style.borderBottomColor,
+      sectionMarginTop: parseFloat(sectionStyle.marginTop),
+      sectionRadius: sectionStyle.borderRadius,
+      sectionShadow: sectionStyle.boxShadow
+    };
+  });
+  expect(desk.heroWidth).toBeGreaterThan(750);
+  expect(desk.heroWidth).toBeLessThan(850);
+  expect(desk.heroHeight / desk.heroWidth).toBeGreaterThan(1.40);
+  expect(desk.heroBorder).toBeGreaterThanOrEqual(2);
+  expect(desk.sectionMarginTop).toBe(0);
+  expect(desk.sectionShadow).toBe("none");
+  expect(desk.sectionRadius).toBe("0px");
+
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.reload();
+  const mobile = await page.evaluate(() => {
+    const el = document.querySelector("#main > div");
+    const table = document.querySelector("#model .table-frame--mobile table");
+    return {
+      pageWidth: el.getBoundingClientRect().width,
+      pageOverflow: document.documentElement.scrollWidth - window.innerWidth,
+      textSize: parseFloat(getComputedStyle(table.querySelector("td")).fontSize),
+      tableRows: document.querySelectorAll("#model .task-table-block").length
+    };
+  });
+  expect(mobile.pageWidth).toBeLessThanOrEqual(320);
+  expect(mobile.pageOverflow).toBeLessThanOrEqual(2);
+  expect(mobile.textSize).toBeGreaterThanOrEqual(13);
+  expect(mobile.tableRows).toBe(6);
+});
+
+test("Ayelet Krespins November 10 workshop is prominent and source-accurate", async ({ page }) => {
+  await page.goto("/");
+  const event = page.locator("#coming tr.event--tnufa-guidance");
+  await expect(event).toHaveCount(1);
+  await expect(event).toContainText("10.11.2026");
+  await expect(event).toContainText("18:00");
+  await expect(event).toContainText("איילת קריספין");
+  await expect(event.locator("a")).toHaveCount(0);
+  const actual = await event.locator(".event__highlight").evaluate(el => ({
+    fontSize: parseFloat(getComputedStyle(el).fontSize),
+    color: getComputedStyle(el).color
+  }));
+  expect(actual.fontSize).toBeGreaterThanOrEqual(18);
+  expect(actual.color).toBe("rgb(7, 90, 58)");
+});
+
+test("A4 screen cover and navigation never overlap or clip text", async ({ page }) => {
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+    const boxes = await page.evaluate(() => {
+      const box = selector => {
+        const el = document.querySelector(selector);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return {x:r.x,y:r.y,left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+      };
+      return {page:box("#main > div"), hero:box("#main .hero"), nav:box("#main .nav-strip"), title:box("#main .hero h1"),
+        subtitle:box("#main .hero__subtitle"), siteWidth:document.documentElement.scrollWidth};
+    });
+    console.log("COVER_LAYOUT", width, JSON.stringify(boxes));
+    expect(boxes.nav.top, "navigation must follow cover at " + width).toBeGreaterThanOrEqual(boxes.hero.bottom - 1);
+    expect(boxes.title.left, "cover heading left boundary at " + width).toBeGreaterThanOrEqual(boxes.page.left - 1);
+    expect(boxes.title.right, "cover heading right boundary at " + width).toBeLessThanOrEqual(boxes.page.right + 1);
+    expect(boxes.siteWidth, "no horizontal overflow at " + width).toBeLessThanOrEqual(width + 2);
+  }
 });
