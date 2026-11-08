@@ -19,6 +19,16 @@ test("canonical edition identity and publication gate", () => {
   assert.equal(data.permissions.showCaptureImages, false);
   assert.equal(data.permissions.publicSiteApproved, false);
 });
+test("browser section counts stay aligned with canonical data", () => {
+  const expectedSource = app.match(/const expected\s*=\s*\{([^}]+)\}/)?.[1];
+  assert.ok(expectedSource, "Runtime section guard must exist");
+  for (const field of ["news", "events", "curriculum", "courses", "tasks", "model"]) {
+    const n = expectedSource.match(new RegExp("\\b" + field + "\\s*:\\s*(\\d+)\\b"));
+    assert.ok(n, "Runtime guard missing " + field);
+    assert.equal(Number(n[1]), data[field].length, field + " data count differs from runtime guard");
+  }
+});
+
 test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.news.length, 3);
   assert.equal(data.events.length, 11);
