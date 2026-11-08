@@ -12,7 +12,8 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
   await expect(page.locator("#news article")).toHaveCount(3);
   await expect(page.locator("#coming tbody tr")).toHaveCount(10);
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
-  await expect(page.locator("#teaching tbody tr")).toHaveCount(10);
+  await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);
+  await expect(page.locator("#teaching .table-frame--mobile tbody tr")).toHaveCount(10);
   await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
   await expect(page.locator("#booklet details")).toHaveCount(6);
   const tableFirst = await page.evaluate(() => {
@@ -30,7 +31,7 @@ test("source photographs remain permission-gated", async ({ page }) => {
   });
   await page.goto("/");
   await page.locator("#booklet details").first().locator("summary").click();
-  await expect(page.getByText("הצילומים המקוריים מופו", { exact: false })).toBeVisible();
+  await expect(page.locator("#booklet details").first().locator(".photo-unavailable")).toBeVisible();
   expect(unauthorized).toEqual([]);
   await expect(page.locator("#booklet img")).toHaveCount(0);
 });
@@ -40,8 +41,8 @@ for (const width of [320, 360, 390, 430, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     await expect(page.locator("#coming table")).toBeVisible();
-    await expect(page.locator("#teaching table")).toBeVisible();
-    await expect(page.locator("#model table").first()).toBeVisible();
+    await expect(page.locator("#teaching .table-frame:visible table")).toBeVisible();
+    await expect(page.locator("#model .table-frame:visible table").first()).toBeVisible();
     const values = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       inner: window.innerWidth,
