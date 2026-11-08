@@ -246,6 +246,27 @@ test("Ayelet Krespins November 10 workshop is prominent and source-accurate", as
   expect(actual.color).toBe("rgb(7, 90, 58)");
 });
 
+test("200% zoom keeps a usable 320px-equivalent mobile layout", async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 900 });
+  await page.goto("/");
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  const metrics = await page.evaluate(() => {
+    const hero = document.querySelector("#main .hero").getBoundingClientRect();
+    const nav = document.querySelector("#main .nav-strip").getBoundingClientRect();
+    return {
+      viewport: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      heroBottom: hero.bottom,
+      navTop: nav.top
+    };
+  });
+  expect(metrics.navTop, "zoomed navigation must follow cover").toBeGreaterThanOrEqual(metrics.heroBottom - 1);
+  expect(metrics.scrollWidth, "200% zoom must not introduce horizontal scroll").toBeLessThanOrEqual(metrics.viewport + 2);
+  await page.locator("#main .nav-strip a[href='#model']").focus();
+  await expect(page.locator("#main .nav-strip a[href='#model']")).toBeFocused();
+});
+
 test("A4 screen cover and navigation never overlap or clip text", async ({ page }) => {
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
