@@ -14,8 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check application JavaScript syntax
-        run: node --check assets/app.js
+      - name: Check application and private-booklet generator syntax
+        run: |
+          node --check assets/app.js
+          node --check scripts/build-private-booklet.mjs
       - name: Check source data and rendering contract
         run: node --test tests/verify.mjs
       - name: Verify absence of distributed capture media
