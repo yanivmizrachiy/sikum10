@@ -110,6 +110,8 @@ function check(data) {
   if (data.tasks.flatMap(t => t.items.flatMap(i => i.parts)).length !== 43)
     throw Error("Expected 43 photograph parts");
   if (!data.permissions || !data.sources?.sheetUrl) throw Error("Missing permissions");
+  if (!/^[0-9a-f]{40}$/.test(data.sources.photographCommitSha || ""))
+    throw Error("Unpinned photograph source");
   // Fail closed even when a future edit toggles just one approval bit.
   if (data.permissions.showCaptureImages &&
      (!data.permissions.distributionApproved || !data.permissions.publicSiteApproved))
@@ -334,7 +336,7 @@ function taskDetail(task, edition) {
       "הצילומים המקוריים מופו לפי שאלה וחלק, אך הצגתם והפצתם ממתינות לאישור זכויות ולהשלמת חוברת ההורדה. המשימה המקורית זמינה בקישור ModEL."));
   } else {
     const base = "https://raw.githubusercontent.com/" +
-      edition.sources.photographRepo + "/main/" + edition.sources.photographBasePath;
+      edition.sources.photographRepo + "/" + edition.sources.photographCommitSha + "/" + edition.sources.photographBasePath;
     task.items.forEach(item => {
       const figure = make("figure", "source-photo");
       item.parts.forEach(part => {
