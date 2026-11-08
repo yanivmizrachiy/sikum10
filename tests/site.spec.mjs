@@ -124,6 +124,31 @@ for (const width of [320, 360, 390, 430, 768, 1440]) {
   });
 }
 
+test("mobile tables retain at least 16px content text at 320 and 390", async ({ page }) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({width, height:900});
+    await page.goto("/");
+    await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+    const metrics = await page.evaluate(() => {
+      const size = selector => {
+        const el = document.querySelector(selector);
+        if (!el) throw Error("Missing text element: " + selector);
+        return parseFloat(getComputedStyle(el).fontSize);
+      };
+      return {
+        scheduled: size("#coming tbody td"),
+        teaching: size("#teaching .table-frame--mobile tbody td"),
+        tasks: size("#model .table-frame--mobile tbody td"),
+        overflow: document.documentElement.scrollWidth - window.innerWidth
+      };
+    });
+    for (const [area, size] of Object.entries(metrics)) {
+      if (area !== "overflow") expect(size, area + " at " + width).toBeGreaterThanOrEqual(16);
+    }
+    expect(metrics.overflow, "horizontal overflow at " + width).toBeLessThanOrEqual(2);
+  }
+});
+
 test("320px mobile links are comfortable touch targets", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto("/");
