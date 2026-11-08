@@ -89,7 +89,7 @@ function page(body, name) {
 const book = [];
 book.push(page(
   '<p class="mast">' + escape(data.edition.region) + '</p>' +
-  '<h1>פותחים שבוע</h1><h2>חוברת המשימות ב־ModEL</h2>' +
+  '<h1>פותחים שבוע</h1><h2>חוברת המשימות ב־Moodle</h2>' +
   '<p class="sub">משימות החובה וההערכה · כיתות ז׳–ח׳</p>' +
   '<p class="date">' + escape(data.edition.weekday + " | " + date(data.edition.date) + " | " + data.edition.hebrewDate) + '</p>' +
   '<div class="line"></div>' +
@@ -98,25 +98,30 @@ book.push(page(
   '',
   "hero"
 ));
-const rows = data.tasks.flatMap(task => {
-  const options=task.submission.length ? task.submission : [null];
-  const color=task.grade==="ז׳" ? "g7" : "g8";
-  const link = /^https:\/\/moodlemoe\.lms\.education\.gov\.il\//.test(task.sourceUrl) ?
-    '<a href="' + escape(task.sourceUrl) + '">למשימה</a>' : "";
-  return options.map(option => '<tr><td class="' + color + '">' + escape(task.grade) +
-    '</td><td>' + escape(task.kind) + '</td><td>' + escape(task.title) +
-    '</td><td>' + escape(option?.track || "—") +
-    (option && option.verification !== "verified" ? '<br><small>טעון אימות</small>' : "") + '</td><td>' + date(option?.from) +
-    '</td><td><strong>' + date(option?.to) + '</strong></td><td>' + link + '</td></tr>');
-}).join("");
+const rows = ["ז׳", "ח׳"].flatMap(grade => ["חובה", "הערכה"].flatMap(kind => {
+  const list = data.tasks.filter(task => task.grade === grade && task.kind === kind);
+  if (!list.length) return [];
+  const color = grade === "ז׳" ? "g7" : "g8";
+  const heading = '<tr class="grp"><td colspan="6" class="' + color + '">' +
+    (kind === "חובה" ? "משימות חובה" : "משימת הערכה") + " בכיתה " + escape(grade) + '</td></tr>';
+  return [heading, ...list.flatMap(task => {
+    const options = task.submission.length ? task.submission : [null];
+    const link = /^https:\/\/moodlemoe\.lms\.education\.gov\.il\//.test(task.sourceUrl) ?
+      '<a href="' + escape(task.sourceUrl) + '">למשימה</a>' : "";
+    return options.map(option => '<tr><td>' + escape(task.title) +
+      '</td><td>' + escape(option?.track || "—") +
+      (option && option.verification !== "verified" ? '<br><small>טעון אימות</small>' : "") +
+      '</td><td>' + date(option?.from) + '</td><td><strong>' + date(option?.to) +
+      '</strong></td><td>' + link + '</td></tr>');
+  })];
+})).join("");
 book.push(page(
   '<div class="head"><p class="sup">ריכוז משימות ומועדי הגשה</p>' +
-  '<h2>מה צריך להגיש ב־ModEL?</h2>' +
+  '<h2>מה צריך להגיש ב־Moodle?</h2>' +
   '<p class="meta">כל שש המשימות המקוריות בפתיחת החוברת</p></div>' +
-  '<table><thead><tr><th style="width:8%">שכבה</th><th style="width:10%">סוג</th>' +
-  '<th style="width:30%">משימה</th><th style="width:12%">מסלול</th>' +
-  '<th style="width:14%">פתיחה</th><th style="width:14%">סיום</th>' +
-  '<th style="width:12%">ModEL</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+  '<table><thead><tr><th style="width:38%">משימה</th><th style="width:14%">מסלול</th>' +
+  '<th style="width:17%">פתיחה</th><th style="width:17%">סיום</th>' +
+  '<th style="width:14%">Moodle</th></tr></thead><tbody>' + rows + '</tbody></table>' +
   '<div class="notice">המועדים המעודכנים חלים על משימת ההערכה הראשונה בלבד:' +
   ' כיתה ח׳ עד 13.11.2026, כיתה ז׳ עד 20.11.2026.' +
   ' לגבי ארבע משימות החובה אין מועד הגשה מאומת במקור.</div>' +
@@ -127,7 +132,7 @@ book.push(page(
   '<div class="head"><p class="sup">לפי שכבות ומשימות</p><h2>תוכן העניינים</h2></div>' +
   '<div class="toc">' + data.tasks.map((task,index) =>
     '<div class="item"><div class="grade">' + escape(task.grade) +
-    ' · ' + escape(task.kind) + ' · ' + (index+1) + '</div>' +
+    ' · ' + (index+1) + '</div>' +
     '<div class="title">' + escape(task.title) + '</div></div>').join("") + '</div>',
   "contents"
 ));
@@ -137,9 +142,9 @@ for (const task of data.tasks) {
       date(s.to) + (s.verification === "requires-confirmation" ? ' (טעון אימות לפני הפצה)' : "")).join('<br>') :
     "מועד הגשה לא אומת במקור.";
   const sourceLink = /^https:\/\/moodlemoe\.lms\.education\.gov\.il\//.test(task.sourceUrl) ?
-    '<a href="' + escape(task.sourceUrl) + '">המשימה המקורית ב־ModEL</a>' : '';
+    '<a href="' + escape(task.sourceUrl) + '">המשימה המקורית ב־Moodle</a>' : '';
   book.push(page(
-    '<div class="grade">כיתה ' + escape(task.grade) + ' · ' + escape(task.kind) + '</div>' +
+    '<div class="grade">כיתה ' + escape(task.grade) + '</div>' +
     '<h2>' + escape(task.title) + '</h2>' +
     '<p class="meta">משימה מקורית · ' + task.questionCount + ' שאלות</p>' +
     '<div class="terms"><p><strong>חלונות ביצוע והגשה:</strong><br>' + range +

@@ -59,7 +59,7 @@ test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.events.length, 10);
   assert.equal(data.courses.length, 10);
   assert.equal(data.curriculum.length, 10);
-  assert.equal(data.model.length, 8);
+  assert.ok(!("model" in data), "no extra guidance block: only the six tasks and the booklet");
   assert.equal(data.news[0].id, "tnufa");
   assert.equal(data.news[1].id, "training");
   assert.equal(data.news[2].id, "resources");
@@ -138,7 +138,7 @@ test("one private local booklet builder, no unsafe public artifact release", () 
   assert.match(generator, /SIKUM10_ORIGINAL_REPO/);
   assert.match(generator, /sourceRead\(entry\.part\.file\)/);
   assert.match(generator, /photographManifestSha/);
-  assert.match(generator, /data\.tasks\.flatMap\(task => \{/);
+  assert.match(generator, /data\.tasks\.filter\(task => task\.grade === grade && task\.kind === kind\)/);
   assert.match(generator, /sourceRead\("manifest\.json"\)/);
   assert.ok(!generator.includes("raw.githubusercontent.com"));
   assert.ok(!generator.includes("await fetch("));

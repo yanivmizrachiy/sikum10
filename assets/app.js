@@ -78,6 +78,15 @@ function drawTable(headings, rows, caption, widths) {
   const tbody = make("tbody");
   for (const row of rows) {
     const tr = make("tr");
+    if (!Array.isArray(row)) {
+      tr.className = "group-row";
+      const th = make("th", "group-head " + cssGrade(row.grade), row.heading);
+      th.colSpan = headings.length;
+      th.scope = "colgroup";
+      tr.append(th);
+      tbody.append(tr);
+      continue;
+    }
     for (const item of row) {
       const td = make("td");
       if (item && typeof item === "object" && "grade" in item) {
@@ -99,7 +108,7 @@ function drawTable(headings, rows, caption, widths) {
 function check(data) {
   if (!data || data.edition?.number !== 10 || data.edition?.date !== "2026-11-08")
     throw Error("Invalid edition identity");
-  const expected = { news: 3, events: 10, curriculum: 10, courses: 10, tasks: 6, model: 8 };
+  const expected = { news: 3, events: 10, curriculum: 10, courses: 10, tasks: 6 };
   for (const [field, count] of Object.entries(expected)) {
     if (!Array.isArray(data[field]) || data[field].length !== count)
       throw Error("Invalid section: " + field);
@@ -328,45 +337,57 @@ function trackLines(task) {
 function tracks(task) {
   return trackLines(task).join(" | ");
 }
+function groupHeading(kind, grade) {
+  return (kind === "חובה" ? "משימות חובה" : "משימת הערכה") + " בכיתה " + grade;
+}
+function taskGroups(tasks) {
+  const groups = [];
+  for (const grade of ["ז׳", "ח׳"]) {
+    for (const kind of ["חובה", "הערכה"]) {
+      const list = tasks.filter(t => t.grade === grade && t.kind === kind);
+      if (list.length) groups.push({ grade, kind, list });
+    }
+  }
+  return groups;
+}
 function taskTable(tasks) {
-  const rows = tasks.map(t => {
-    const due = make("div");
-    append(due, make("strong", "date-strong", deadline(t)), ...trackLines(t).map(line => make("div", "subtle", line)));
-    return [
-      { grade: t.grade, element: make("strong", null, t.grade) },
-      make("strong", null, t.title),
-      t.kind, due, sourceLink(t.sourceUrl, "למשימה")
-    ];
-  });
-  const desktop = drawTable(
-    ["שכבה", "משימה שיש לבצע ולהגיש", "סוג", "חלון ומועד הגשה", "ModEL"],
-    rows, "טבלה מסכמת בתחילת מדור ModEL — 6 משימות מקור", [10, 31, 13, 32, 14]
-  );
-  desktop.classList.add("table-frame--desktop");
-  const compact = tasks.map(t=>{
-    const name = make("div");
-    append(name, make("strong", null, t.title), make("div", "subtle", t.kind));
+  const groups = taskGroups(tasks);
+  const dueCell = (t, withLink) => {
     const due = make("div");
     append(due, make("strong", "date-strong", deadline(t)),
-      ...trackLines(t).map(line => make("div", "subtle", line)), sourceLink(t.sourceUrl,"למשימה"));
-    return [{grade:t.grade,element:make("strong",null,t.grade)},name,due];
-  });
-  const mobile = drawTable(["שכבה","משימה וסוג","הגשה וקישור"],
-    compact, "טבלת הגשות · מותאמת לנייד", [18,40,42]);
-  mobile.classList.add("table-frame--mobile");
+      ...trackLines(t).map(line => make("div", "subtle", line)));
+    if (withLink) due.append(sourceLink(t.sourceUrl, "למשימה"));
+    return due;
+  };
+  const build = (headings, cells, caption, widths, cls) => {
+    const rows = groups.flatMap(g => [
+      { heading: groupHeading(g.kind, g.grade), grade: g.grade },
+      ...g.list.map(t => cells(t))
+    ]);
+    const frame = drawTable(headings, rows, caption, widths);
+    frame.classList.add(cls);
+    return frame;
+  };
+  const desktop = build(
+    ["משימה שיש לבצע ולהגיש", "חלון ומועד הגשה", "Moodle"],
+    t => [make("strong", null, t.title), dueCell(t, false), sourceLink(t.sourceUrl, "למשימה")],
+    "טבלה מסכמת בתחילת מדור Moodle — 6 משימות מקור", [46, 38, 16], "table-frame--desktop");
+  const mobile = build(
+    ["משימה", "הגשה וקישור"],
+    t => [make("strong", null, t.title), dueCell(t, true)],
+    "טבלת הגשות · מותאמת לנייד", [46, 54], "table-frame--mobile");
   const result = make("div");
-  append(result,desktop,mobile);
+  append(result, desktop, mobile);
   return result;
 }
 function taskDetail(task, edition) {
   const detail = make("details", "task");
   detail.id = "task-" + task.id;
   const summary = make("summary");
-  append(summary, make("span", "task__name", task.grade + " · " + task.title),
-    make("span", "task__badge", task.kind));
+  append(summary, make("span", "task__name", task.title));
   detail.append(summary);
   const body = make("div", "task__body");
-  body.append(make("p", null, task.questionCount + " שאלות מקור · " + task.kind));
+  body.append(make("p", null, task.questionCount + " שאלות מקור"));
   if (task.submission.length) {
     body.append(make("p", null, "מועדי הגשה לפי מסלול: " + tracks(task)));
     if (task.submission.some(s => s.verification === "requires-confirmation"))
@@ -377,14 +398,14 @@ function taskDetail(task, edition) {
     body.append(make("p", "task__warning",
       "מועד ההגשה למשימה זו אינו מופיע במניפסט המקורי. אין להסיק תאריך מהחודש שבו פורסמה."));
   }
-  const source = external(task.sourceUrl, "פתיחת המשימה המקורית ב־ModEL");
+  const source = external(task.sourceUrl, "פתיחת המשימה המקורית ב־Moodle");
   if (source) body.append(source);
   // A public commit must never unexpectedly surface source photos: all gates must pass.
   const p = edition.permissions;
   const allowPhotos = p.showCaptureImages && p.distributionApproved && p.publicSiteApproved;
   if (!allowPhotos) {
     body.append(make("p", "photo-unavailable",
-      "הצילומים המקוריים מופו לפי שאלה וחלק, אך הצגתם והפצתם ממתינות לאישור זכויות ולהשלמת חוברת ההורדה. המשימה המקורית זמינה בקישור ModEL."));
+      "הצילומים המקוריים מופו לפי שאלה וחלק, אך הצגתם והפצתם ממתינות לאישור זכויות ולהשלמת חוברת ההורדה. המשימה המקורית זמינה בקישור Moodle."));
   } else {
     const base = "https://raw.githubusercontent.com/" +
       edition.sources.photographRepo + "/" + edition.sources.photographCommitSha + "/" + edition.sources.photographBasePath;
@@ -412,7 +433,7 @@ function booklet(data) {
   const head = make("header", "booklet__head");
   append(head,
     make("span", "booklet__tag", "חוברת נלווית · שבוע טוב מס׳ 10"),
-    make("h3", null, "משימות החובה וההערכה ב־ModEL — מועדים והגשות"),
+    make("h3", null, "משימות החובה וההערכה ב־Moodle — מועדים והגשות"),
     make("p", null, "חוברת חדשה לאורך לכיתות ז׳–ח׳, המבוססת על המצגת והצילומים המקוריים."),
     make("p", "subtle",
       data.tasks.length + " משימות · " +
@@ -433,14 +454,14 @@ function booklet(data) {
   nav.append(navInner);
   article.append(nav);
   ["ז׳", "ח׳"].forEach(grade => {
-    const h = make("h4", "section__title", "משימות כיתה " + grade);
+    const h = make("h4", "section__title", "משימות בכיתה " + grade);
     h.style.marginBlock = "24px 12px";
     article.append(h);
     data.tasks.filter(t => t.grade === grade).forEach(t => article.append(taskDetail(t, data)));
   });
   // No misleading PDF/download/share buttons until a real licensed file exists.
   article.append(make("div", "notice",
-    "הורדה ושיתוף של החוברת המלאה יופעלו רק לאחר שילוב כל הצילומים, בדיקת הקובץ ואישור הפצה. בשלב זה ניתן לפתוח את המשימות ב־ModEL."));
+    "הורדה ושיתוף של החוברת המלאה יופעלו רק לאחר שילוב כל הצילומים, בדיקת הקובץ ואישור הפצה. בשלב זה ניתן לפתוח את המשימות ב־Moodle."));
   return article;
 }
 function model(root, data) {
@@ -456,18 +477,6 @@ function model(root, data) {
     assessments.map(t => "כיתה " + t.grade + " עד " + deadline(t)).join("; ") +
     ". " + missingDates + " משימות חובה ללא מועד הגשה מאומת."));
   body.append(booklet(data));
-  const heading = make("h3", "section__title", "הנחיות נוספות ב־ModEL");
-  heading.style.marginBlock = "30px 14px";
-  body.append(heading);
-  const grid = make("div", "learning-grid");
-  data.model.filter(m => m.type !== "חוברת דיגיטלית נלווית").forEach(m => {
-    const card = make("article", "learning-item");
-    append(card, make("h3", null, m.grade + " · " + m.type),
-      make("p", null, m.title), make("p", "subtle", m.description));
-    if (m.url) card.append(sourceLink(m.url, "למקור"));
-    grid.append(card);
-  });
-  body.append(grid);
   root.append(section);
 }
 function footer(root, edition) {

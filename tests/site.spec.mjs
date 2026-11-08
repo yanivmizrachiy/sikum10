@@ -20,7 +20,9 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
   await expect(page.locator("#courses tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--desktop tbody tr")).toHaveCount(10);
   await expect(page.locator("#teaching .table-frame--mobile tbody tr")).toHaveCount(10);
-  await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
+  await expect(page.locator("#model .table-frame").first().locator("tbody tr:not(.group-row)")).toHaveCount(6);
+  await expect(page.locator("#model .table-frame--desktop .group-head")).toHaveText(["משימות חובה בכיתה ז׳", "משימת הערכה בכיתה ז׳", "משימות חובה בכיתה ח׳", "משימת הערכה בכיתה ח׳"]);
+  await expect(page.locator("#model .table-frame--desktop thead")).not.toContainText("סוג");
   await expect(page.locator("#booklet details")).toHaveCount(6);
   const tableFirst = await page.evaluate(() => {
     const model = document.querySelector("#model");

@@ -87,6 +87,8 @@ tbody tr:nth-child(even){background:var(--tint)}
 .course-number{color:var(--accent)}
 #coming .date-strong,.ltr{white-space:nowrap}
 .grade-cell{font-weight:800}
+.group-head{font:900 1.05rem/1.4 var(--serif);text-align:right;padding:10px 12px;border-bottom:0}
+tbody tr.group-row{background:transparent}
 .grade--7{color:var(--grade7);background:var(--grade7-bg)}
 .grade--8{color:var(--grade8);background:var(--grade8-bg)}
 .grade--9{color:var(--grade9);background:var(--grade9-bg)}
@@ -116,11 +118,6 @@ tbody tr:nth-child(even){background:var(--tint)}
 .source-photo img{display:block;width:100%;height:auto;object-fit:contain}
 .source-photo figcaption{font-size:13px;color:var(--soft);padding:7px}
 .photo-unavailable{padding:14px;border:2px dashed var(--orange);background:var(--orange-t);border-radius:6px}
-.learning-grid{display:grid;gap:10px}
-.learning-item{border:2px solid var(--line);border-top:5px solid var(--accent);padding:14px;border-radius:6px;background:#fff}
-.learning-item:nth-child(3n+2){border-top-color:var(--orange)}.learning-item:nth-child(3n){border-top-color:var(--teal)}
-.learning-item h3{font:800 1rem var(--sans);margin:0 0 6px}
-.learning-item p{margin:0;font-size:15px}
 .footer{color:var(--soft);font-size:14px;padding:18px 0 calc(36px + env(safe-area-inset-bottom));text-align:center;border-top:3px double var(--ink);margin-top:40px}
 .status{max-width:700px;background:#fff;padding:32px;margin:55px auto;border:2px solid var(--ink);border-radius:8px}
 
@@ -141,7 +138,6 @@ tbody tr:nth-child(even){background:var(--tint)}
   body{font-size:18px}
   .news-grid{grid-template-columns:1.2fr 1fr}
   .news-card:last-child{grid-column:1/-1}
-  .learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .nav-strip .container{justify-content:center}
 }
 @media(max-width:380px){
