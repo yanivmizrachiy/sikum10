@@ -167,7 +167,7 @@ function navigation(root) {
     ["coming", "מה צפוי"],
     ["courses", "מפגשי השתלמות"],
     ["teaching", "מה אנחנו מלמדים"],
-    ["model", "מה צריך לעשות במודל"]
+    ["model", "מה צריך לעשות במודל?"]
   ].forEach(([id, text]) => {
     const a = make("a", null, text);
     a.href = "#" + id;
@@ -311,7 +311,7 @@ function teaching(root, items) {
   });
   const mobileTable = drawTable(
     ["שכבה ומסלול", "נושאים ותתי־נושאים", "מקור"],
-    compactRows, "פריסות נובמבר · טבלת נייד", [26, 58, 16]
+    compactRows, "פריסות נובמבר · טבלת נייד", [24, 50, 26]
   );
   mobileTable.classList.add("table-frame--mobile");
   body.append(desktopTable, mobileTable);
@@ -445,7 +445,7 @@ function booklet(data) {
 }
 function model(root, data) {
   const { section, body } = titleBar(
-    "model", 5, "מה צריך לעשות במודל",
+    "model", 5, "מה צריך לעשות במודל?",
     "בראש המדור: טבלה מסכמת של כל המשימות ומועדי ההגשה. אחריה החוברת הדיגיטלית החדשה לאורך."
   );
   body.append(taskTable(data.tasks));

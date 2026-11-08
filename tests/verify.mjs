@@ -66,7 +66,7 @@ test("complete unique sections and editorial accuracy", () => {
   assert.ok(!data.events.some(e => /מרצה:|בהנחיית/.test(e.title)));
   assert.ok(data.events.some(e => e.date === "17.11.2026" && e.status === "time-unverified" && e.verifiedTime === null));
   assert.ok(data.events.some(e => e.date === "18.11.2026" && e.status === "proposed"));
-  assert.ok(data.curriculum.some(x => x.grade === "ט׳" && x.track === "פריסה רגילה"));
+  assert.ok(data.curriculum.some(x => x.grade === "ט׳" && x.track === ""), "regular ninth-grade rows carry no track label");
   assert.ok(data.curriculum.some(x => x.grade === "ט׳" && x.track === "פריסה מצומצמת"));
 });
 test("six original tasks, 36 questions, 6 contextual items, 43 captured parts", () => {
