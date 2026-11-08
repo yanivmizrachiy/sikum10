@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { PDFDocument } from "pdf-lib";
 
 test("all canonical headings, news and booklet order", async ({ page }) => {
   const errors = [];
@@ -22,6 +23,65 @@ test("all canonical headings, news and booklet order", async ({ page }) => {
   });
   expect(tableFirst).toBeTruthy();
   expect(errors).toEqual([]);
+});
+
+test("every canonical record is faithfully rendered with real source links", async ({ page }) => {
+  const response = await page.request.get("/data/edition.json");
+  expect(response.ok()).toBeTruthy();
+  const data = await response.json();
+  await page.goto("/");
+
+  const news = page.locator("#news article");
+  for (const [index, item] of data.news.entries()) {
+    const row = news.nth(index);
+    await expect(row.locator("h3")).toHaveText(item.title);
+    await expect(row).toContainText(item.description);
+    if (item.url) await expect(row.locator("a").first()).toHaveAttribute("href", item.url);
+  }
+
+  const events = page.locator("#coming tbody tr");
+  for (const [index, item] of data.events.entries()) {
+    const row = events.nth(index);
+    await expect(row).toContainText(item.date);
+    await expect(row).toContainText(item.title);
+    await expect(row).toContainText(item.status === "time-unverified" ? "השעה טרם אומתה" : item.time);
+    if (item.course) await expect(row).toContainText(item.course);
+    if (item.url) await expect(row.locator("a")).toHaveAttribute("href", item.url);
+    if (item.status === "time-unverified") await expect(row).toContainText("השעה טרם אומתה");
+    if (item.status === "proposed") await expect(row).toContainText("מועד מוצע");
+  }
+
+  const courses = page.locator("#courses tbody tr");
+  for (const [index, item] of data.courses.entries()) {
+    const row = courses.nth(index);
+    for (const text of [item.date, item.mode, item.topic, item.description]) {
+      await expect(row).toContainText(text);
+    }
+    await expect(row.locator("a")).toHaveAttribute("href", item.syllabus);
+  }
+
+  const desktopTeaching = page.locator("#teaching .table-frame--desktop tbody tr");
+  const mobileTeaching = page.locator("#teaching .table-frame--mobile tbody tr");
+  for (const [index, item] of data.curriculum.entries()) {
+    for (const row of [desktopTeaching.nth(index), mobileTeaching.nth(index)]) {
+      for (const text of [item.grade, item.track, item.domain, item.subjects]) {
+        await expect(row).toContainText(text);
+      }
+      await expect(row.locator("a")).toHaveAttribute("href", item.url);
+    }
+  }
+
+  const desktopTasks = page.locator("#model > .section__body .table-frame--desktop tbody tr");
+  const mobileTasks = page.locator("#model > .section__body .table-frame--mobile tbody tr");
+  const details = page.locator("#booklet details");
+  for (const [index, task] of data.tasks.entries()) {
+    for (const row of [desktopTasks.nth(index), mobileTasks.nth(index)]) {
+      await expect(row).toContainText(task.title);
+      await expect(row).toContainText(task.kind);
+      await expect(row.locator("a")).toHaveAttribute("href", task.sourceUrl);
+    }
+    await expect(details.nth(index).locator("summary")).toContainText(task.title);
+  }
 });
 
 test("source photographs remain permission-gated", async ({ page }) => {
@@ -57,6 +117,39 @@ for (const width of [320, 360, 390, 430, 768, 1440]) {
     }
   });
 }
+
+test("320px mobile links are comfortable touch targets", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/");
+  const targets = await page.locator(".nav-strip a:visible, .table-link:visible").evaluateAll(elements =>
+    elements.map(element => ({
+      text: (element.textContent || "").trim(),
+      height: element.getBoundingClientRect().height
+    }))
+  );
+  expect(targets.length).toBeGreaterThan(10);
+  for (const target of targets) {
+    expect(target.height, target.text).toBeGreaterThanOrEqual(43.9);
+  }
+});
+
+test("print preview renders real A4 portrait pages without unpublished photos", async ({ page }) => {
+  const unauthorized = [];
+  page.on("request", request => {
+    if (request.url().includes("/content/captures/")) unauthorized.push(request.url());
+  });
+  await page.goto("/");
+  await page.emulateMedia({ media: "print" });
+  const pdfBytes = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+  const document = await PDFDocument.load(pdfBytes);
+  expect(document.getPageCount()).toBeGreaterThanOrEqual(5);
+  for (const pdfPage of document.getPages()) {
+    const { width, height } = pdfPage.getSize();
+    expect(Math.abs(width - 595.28)).toBeLessThan(1);
+    expect(Math.abs(height - 841.89)).toBeLessThan(1);
+  }
+  expect(unauthorized).toEqual([]);
+});
 
 test("reduced motion disables rotating emblem", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
