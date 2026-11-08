@@ -151,6 +151,23 @@ test("print preview renders real A4 portrait pages without unpublished photos", 
   await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
   await page.emulateMedia({ media: "print" });
   await page.evaluate(() => document.fonts.ready);
+  const printLayout = await page.evaluate(() => ({
+    mainText: document.querySelector("#main")?.textContent?.length,
+    mainHeight: Math.round(document.querySelector("#main")?.getBoundingClientRect()?.height || 0),
+    bodyHeight: document.body.scrollHeight,
+    sectionCount: document.querySelectorAll("#main > div > .section").length,
+    sections: [...document.querySelectorAll("#main > div > .section")].map(e => ({
+      name:e.id,
+      height:Math.round(e.getBoundingClientRect().height),
+      display:getComputedStyle(e).display,
+      breakBefore:getComputedStyle(e).breakBefore,
+      visibility:getComputedStyle(e).visibility
+    })),
+    paper: [...document.styleSheets].length
+  }));
+  console.log("PRINT_LAYOUT", JSON.stringify(printLayout));
+  expect(printLayout.sectionCount).toBe(5);
+  expect(printLayout.mainText).toBeGreaterThan(6000);
   const pdfBytes = await page.pdf({ preferCSSPageSize: true, printBackground: true });
   const document = await PDFDocument.load(pdfBytes);
   expect(document.getPageCount()).toBeGreaterThanOrEqual(5);
