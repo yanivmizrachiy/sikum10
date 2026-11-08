@@ -80,7 +80,7 @@ test("safe markup and a real summary table before the booklet", () => {
   assert.match(app, /drawTable\(/);
   assert.ok(app.indexOf("body.append(taskTable(data.tasks))") >= 0);
   assert.ok(app.indexOf("body.append(taskTable(data.tasks))") < app.indexOf("body.append(booklet(data))"));
-  assert.match(app, /p\.showCaptureImages && p\.distributionApproved && p\.publicSiteApproved/);
+  assert.match(app, /edition\.permissions\.showCaptureImages\s*&&\s*edition\.permissions\.distributionApproved\s*&&\s*edition\.permissions\.publicSiteApproved/);
   assert.ok(!/\binnerHTML\s*=/.test(app));
   assert.ok(!/window\.print\(\)/.test(app), "No pretend PDF download while images are unlicensed");
   assert.match(css, /@page\s*\{\s*size:A4 portrait/);
@@ -88,6 +88,12 @@ test("safe markup and a real summary table before the booklet", () => {
   assert.match(css, /\.grade--7/);
   assert.match(css, /\.grade--8/);
   assert.match(css, /\.grade--9/);
+  assert.match(css, /--sheet-divider:#075861/);
+  assert.match(css, /#coming \.event--tnufa-guidance/);
+  assert.match(app, /function tracksTable\(tasks\)/);
+  assert.match(app, /task-table-block/);
+  assert.doesNotMatch(app, /make\("details",\s*"task"\)/);
+  assert.match(app, /items\.map\(item/);
 });
 test("do not embed images from earlier project in public source", () => {
   const root = new URL("../", import.meta.url);
