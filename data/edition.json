@@ -1,0 +1,996 @@
+{
+  "schemaVersion": "1.0.0",
+  "edition": {
+    "number": 10,
+    "title": "פותחים שבוע",
+    "subtitle": "סיכום שבועי מספר 10",
+    "date": "2026-11-08",
+    "displayDate": "יום ראשון | כ״ח בחשוון תשפ״ז | 8.11.2026",
+    "field": "מתמטיקה בחטיבת הביניים",
+    "region": "מחוז ירושלים והעיר ירושלים",
+    "lead": "בהובלת איילת קריספין",
+    "credit": "יניב רז | הדרכה מחוזית במתמטיקה, חטיבת הביניים",
+    "greeting": "שבוע טוב"
+  },
+  "permissions": {
+    "distributionApproved": false,
+    "showCaptureImages": false,
+    "publicSiteApproved": false
+  },
+  "sources": {
+    "sheetUrl": "https://docs.google.com/spreadsheets/d/1xEchRCl2W5eV1WQEhQmmTLYuz_rr1UoXzS0gnf2BiBE/edit",
+    "photographRepo": "yanivmizrachiy/yaniv-raz-math-presentation",
+    "photographManifestSha": "e7f033d0dd184ab8015290665f6147b6584b7e80",
+    "photographBasePath": "public/content/",
+    "photographsLicenseStatus": "requires-distribution-approval",
+    "courseSource": "user-authorized Google Sheet"
+  },
+  "news": [
+    {
+      "id": "tnufa",
+      "title": "דוגמה חדשה למבחן תנופה במתמטיקה לכיתה ט׳",
+      "description": "לקראת מבחן תנופה במתמטיקה לכיתה ט׳, פורסמה בקבוצת ״לקראת תנופה״ דוגמה חדשה לתרגול ולהיכרות עם סוגי שאלות. הקובץ המצורף הוא גרסת תרגול עצמאית ולא מבחן רשמי של ראמ״ה.",
+      "url": "https://drive.google.com/file/d/183vZaMv9tdF-zZ5a59iRZknE6UebjZni/view",
+      "linkText": "לתרגול לקראת תנופה",
+      "footnote": "גרסת תרגול עצמאית, אינה מבחן רשמי של ראמ״ה."
+    },
+    {
+      "id": "training",
+      "title": "השתלמות חדשה למורי המתמטיקה בחטיבת הביניים",
+      "description": "השבוע פרסמנו השתלמות מקצועית חדשה למורי המתמטיקה בעיר ירושלים ובמחוז ירושלים, בהנחיית יניב רז ועידן אחוון. ההשתלמות תעסוק בדגשים בעדכון תוכנית הלימודים בחטיבת הביניים, בשילוב בינה מלאכותית, טכנולוגיה, חקר והוראה פעילה.",
+      "course": "208094",
+      "fullName": "דגשים בעדכון תוכנית הלימודים בחטיבת הביניים במתמטיקה",
+      "url": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view",
+      "linkText": "לצפייה בסילבוס",
+      "footnote": "מועד הפתיחה 18.11 מוצע וטעון אישור סופי."
+    },
+    {
+      "id": "resources",
+      "title": "דפי ליווי לתרגול באתר המחוז",
+      "description": "כיתה ח׳ — דף דו־שבועי; כיתה ט׳ — דף חודשי לכל הרמות.",
+      "url": "https://jerusalem2.vercel.app",
+      "linkText": "לאתר המחוז"
+    }
+  ],
+  "events": [
+    {
+      "date": "08.11.2026",
+      "day": "ראשון",
+      "time": "19:00–21:30",
+      "title": "המפגש הבא בהשתלמות בינה מלאכותית ו־ModEL בהוראת מתמטיקה ז׳–ח׳",
+      "course": "201590",
+      "details": "מפגש מס׳ 3; אחריו מפגש ב־22.11.2026.",
+      "verifiedTime": "19:00–21:30",
+      "status": "verified",
+      "url": "https://www.google.com/calendar/event?eid=dmg2cGhkdXBvNjNiZjE4ZTJqYTJjcmZlamtfMjAyNjExMDhUMTcwMDAwWiB5YW5pdm1pejc3QG0"
+    },
+    {
+      "date": "10.11.2026",
+      "day": "שלישי",
+      "time": "19:00–21:30",
+      "title": "המפגש הבא בהשתלמות הוראת המתמטיקה בכיתות ט׳ לקראת 4–5 יח״ל",
+      "course": "201041",
+      "details": "מפגש מס׳ 3: הפרבולה (המודל הריבועי), לפי הסילבוס.",
+      "verifiedTime": "19:00–21:30",
+      "status": "verified",
+      "url": "https://drive.google.com/file/d/1xTd7s-jLCKEftpcnNfl23fGmHofUrcFm/view"
+    },
+    {
+      "date": "10.11.2026",
+      "day": "שלישי",
+      "time": "20:30–22:00",
+      "title": "הדרכה וסיוע במודל",
+      "course": null,
+      "details": "מפגש עצמאי; קישור זום יתווסף לאחר שיימסר.",
+      "verifiedTime": "20:30–22:00",
+      "status": "verified",
+      "url": "https://www.google.com/calendar/event?eid=ZzgwZTRzbHBtbDg0bWwzN3ZoZHJqdDR1czQgeWFuaXZtaXo3N0Bt"
+    },
+    {
+      "date": "11.11.2026",
+      "day": "רביעי",
+      "time": "שעת סגירה לא נמסרה",
+      "title": "סגירת עדכון נתוני הנבחנים והבקשות להתאמות — מבחן תנופה ט׳",
+      "course": null,
+      "details": "לבתי הספר שנדגמו: להשלים במערכת איסוף הנתונים את פרטי ההיערכות וההתאמות לתלמידים הזכאים. המועד הוא 11.11.2026 לפי ההודעה הרשמית שהועברה בוואטסאפ; שעת סגירה לא נמסרה.",
+      "verifiedTime": "שעת סגירה לא נמסרה",
+      "status": "verified",
+      "url": null
+    },
+    {
+      "date": "13.11.2026",
+      "day": "שישי",
+      "time": "עד לתאריך זה",
+      "title": "משימת הערכה ראשונה ב־ModEL — כיתה ח׳",
+      "course": null,
+      "details": "מועד מעודכן בעקבות בקשות המורים; חל על משימת ההערכה הראשונה בלבד.",
+      "verifiedTime": "עד לתאריך זה",
+      "status": "verified",
+      "url": null
+    },
+    {
+      "date": "17.11.2026",
+      "day": "שלישי",
+      "time": "14:00–19:00 לפי היומן; טעון אימות מול הפלייר",
+      "title": "כנס רכזי המתמטיקה העל־יסודי — פסג״ה מודיעין",
+      "course": "207516",
+      "details": "הרשמה לכנס הרכזים בפסג״ה מודיעין, מספר פתרון למידה 207516; שעות האירוע טרם אומתו מול הפלייר הרשמי.",
+      "verifiedTime": null,
+      "status": "time-unverified",
+      "url": "https://www.google.com/calendar/event?eid=OWM0aGQ1MDE4cmlkOXN2OG40bDZ2dmZxMnMgeWFuaXZtaXo3N0Bt"
+    },
+    {
+      "date": "18.11.2026",
+      "day": "רביעי",
+      "time": "19:00–21:30",
+      "title": "מפגש ראשון בהשתלמות דגשים בעדכון תוכנית הלימודים בחטיבת הביניים במתמטיקה",
+      "course": "208094",
+      "details": "מועד מוצע בסילבוס; טעון אישור סופי. נושא: כש־AI ותוכנית הלימודים המעודכנת נפגשים.",
+      "verifiedTime": "19:00–21:30",
+      "status": "proposed",
+      "url": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view"
+    },
+    {
+      "date": "20.11.2026",
+      "day": "שישי",
+      "time": "עד לתאריך זה",
+      "title": "משימת הערכה ראשונה ב־ModEL — כיתה ז׳",
+      "course": null,
+      "details": "מועד מעודכן בעקבות בקשות המורים; חל על משימת ההערכה הראשונה בלבד.",
+      "verifiedTime": "עד לתאריך זה",
+      "status": "verified",
+      "url": null
+    },
+    {
+      "date": "22.11.2026",
+      "day": "ראשון",
+      "time": "19:00–21:30",
+      "title": "המפגש הבא בהשתלמות בינה מלאכותית ו־ModEL בהוראת מתמטיקה ז׳–ח׳",
+      "course": "201590",
+      "details": "מפגש מס׳ 4, על פי היומן.",
+      "verifiedTime": "19:00–21:30",
+      "status": "verified",
+      "url": "https://www.google.com/calendar/event?eid=dmg2cGhkdXBvNjNiZjE4ZTJqYTJjcmZlamtfMjAyNjExMjJUMTcwMDAwWiB5YW5pdm1pejc3QG0"
+    },
+    {
+      "date": "25.11.2026",
+      "day": "רביעי",
+      "time": "10:00",
+      "title": "מבחן תנופה במתמטיקה לכיתה ט׳ — בתי הספר שנדגמו",
+      "course": null,
+      "details": "ט״ו בכסלו תשפ״ז. מבחן תנופה הרשמי במתמטיקה לכיתה ט׳ בבתי הספר שנדגמו. המועד מאומת בדף הבחינה באתר ראמ״ה; השעה 10:00 בדף השאלות והתשובות של ראמ״ה ובהודעת ראמ״ה שהועברה בוואטסאפ.",
+      "verifiedTime": "10:00",
+      "status": "verified",
+      "url": "https://rama.gov.il/assessments/tnufa-math-11-2026"
+    }
+  ],
+  "curriculum": [
+    {
+      "grade": "ז׳",
+      "track": "כל הקבוצות",
+      "month": "נובמבר",
+      "domain": "מספרי",
+      "subjects": "הרחבת מערכת הצירים; כפל וחילוק מספרים מכוונים.",
+      "url": "https://drive.google.com/file/d/1wLUkZejzGu76jzibAPRvNbZDZzedqTn2/view"
+    },
+    {
+      "grade": "ז׳",
+      "track": "כל הקבוצות",
+      "month": "נובמבר",
+      "domain": "גאומטריה",
+      "subjects": "זוויות במשולש שווה־שוקיים, שווה־צלעות וישר־זווית; סכום זוויות במשולש ובמרובע; תחילת צורות חופפות וטרנספורמציות במישור.",
+      "url": "https://drive.google.com/file/d/1wLUkZejzGu76jzibAPRvNbZDZzedqTn2/view"
+    },
+    {
+      "grade": "ח׳",
+      "track": "כל הקבוצות",
+      "month": "נובמבר",
+      "domain": "אי־ודאות",
+      "subjects": "איסוף וקריאת מידע; שכיחות ושכיחות יחסית.",
+      "url": "https://drive.google.com/file/d/16Ww0Aln4JuF0ZJI20I51ZkkLlCe0yNdJ/view"
+    },
+    {
+      "grade": "ח׳",
+      "track": "כל הקבוצות",
+      "month": "נובמבר",
+      "domain": "גאומטריה",
+      "subjects": "המשך גליל וחרוט; טרנספורמציות וצורות חופפות.",
+      "url": "https://drive.google.com/file/d/16Ww0Aln4JuF0ZJI20I51ZkkLlCe0yNdJ/view"
+    },
+    {
+      "grade": "ח׳",
+      "track": "כל הקבוצות",
+      "month": "נובמבר",
+      "domain": "אלגברה",
+      "subjects": "מבוא לפונקציות: ייצוגים בטבלה, בגרף ובביטוי אלגברי; עלייה וירידה של פונקציה; גרפים ליניאריים.",
+      "url": "https://drive.google.com/file/d/16Ww0Aln4JuF0ZJI20I51ZkkLlCe0yNdJ/view"
+    },
+    {
+      "grade": "ט׳",
+      "track": "פריסה רגילה",
+      "month": "נובמבר",
+      "domain": "אלגברה",
+      "subjects": "פונקציות ריבועיות: תכונות וייצוגים; פתרון משוואות ריבועיות.",
+      "url": "https://drive.google.com/file/d/1aVfsQNbnf4TgeAJy0n0ARPM87-HsLYH6/view"
+    },
+    {
+      "grade": "ט׳",
+      "track": "פריסה רגילה",
+      "month": "נובמבר",
+      "domain": "גאומטריה",
+      "subjects": "יחס בין צלעות וזוויות במשולש; משולש ישר־זווית 30°–60°–90°; ישרים מקבילים וטרפז.",
+      "url": "https://drive.google.com/file/d/1aVfsQNbnf4TgeAJy0n0ARPM87-HsLYH6/view"
+    },
+    {
+      "grade": "ט׳",
+      "track": "פריסה מצומצמת",
+      "month": "נובמבר",
+      "domain": "אי־ודאות",
+      "subjects": "סטטיסטיקה: ארגון נתונים, שכיחות ושכיחות יחסית; טווח, ממוצע, חציון ושכיח.",
+      "url": "https://drive.google.com/file/d/1yavedC50kMCeSPSqb0mIPunbf5djupUl/view"
+    },
+    {
+      "grade": "ט׳",
+      "track": "פריסה מצומצמת",
+      "month": "נובמבר",
+      "domain": "גאומטריה",
+      "subjects": "המשך משפט פיתגורס; דלתון ומשולש שווה־שוקיים.",
+      "url": "https://drive.google.com/file/d/1yavedC50kMCeSPSqb0mIPunbf5djupUl/view"
+    },
+    {
+      "grade": "ט׳",
+      "track": "פריסה מצומצמת",
+      "month": "נובמבר",
+      "domain": "מספרי",
+      "subjects": "אחוזים: החלק היחסי מהשלם, הגדלה והקטנה ושאלות מילוליות.",
+      "url": "https://drive.google.com/file/d/1yavedC50kMCeSPSqb0mIPunbf5djupUl/view"
+    }
+  ],
+  "model": [
+    {
+      "grade": "כלל המורים",
+      "type": "מרחבי לימוד",
+      "title": "פתיחה ושיוך תלמידים",
+      "description": "לכל קבוצת לימוד לוודא מרחב פעיל, תלמידים משויכים ומשימות נראות במרחב.",
+      "deadline": "עבודה שוטפת",
+      "url": null
+    },
+    {
+      "grade": "ז׳",
+      "type": "משימת חובה בנובמבר",
+      "title": "מזגן על הקיר בכיתה",
+      "description": "משימת חובה בנושא זוויות; לשייכה למרחב הקבוצה.",
+      "deadline": "נובמבר 2026",
+      "url": "https://drive.google.com/file/d/1wLUkZejzGu76jzibAPRvNbZDZzedqTn2/view"
+    },
+    {
+      "grade": "ח׳",
+      "type": "משימת חובה בנובמבר",
+      "title": "מודל הזמן של נועה",
+      "description": "משימת חובה בנושא אחוזים; פורסמה בעדכוני המרחב, לפי הודעת דייה מ־29.10.",
+      "deadline": "נובמבר 2026",
+      "url": "https://drive.google.com/file/d/16Ww0Aln4JuF0ZJI20I51ZkkLlCe0yNdJ/view"
+    },
+    {
+      "grade": "ח׳",
+      "type": "משימת הערכה ראשונה",
+      "title": "ביצוע עד 13.11.2026",
+      "description": "המועד עודכן בעקבות בקשות מורים בנוגע להספקי ההוראה ולהתארגנות.",
+      "deadline": "13.11.2026",
+      "url": null
+    },
+    {
+      "grade": "ז׳",
+      "type": "משימת הערכה ראשונה",
+      "title": "ביצוע עד 20.11.2026",
+      "description": "המועד עודכן בעקבות בקשות מורים בנוגע להספקי ההוראה ולהתארגנות.",
+      "deadline": "20.11.2026",
+      "url": null
+    },
+    {
+      "grade": "ח׳",
+      "type": "דפי ליווי דו־שבועיים",
+      "title": "לשלב בהוראה",
+      "description": "בהודעת עינת יצחק צוין שילוב הדפים הדו־שבועיים בשיעורי המתמטיקה.",
+      "deadline": "דו־שבועי",
+      "url": null
+    },
+    {
+      "grade": "ז׳–ח׳",
+      "type": "תחולת העדכון",
+      "title": "המשימה הראשונה בלבד",
+      "description": "השינוי במועדים נקודתי למשימת ההערכה הראשונה; אין להשליכו על המשימות הבאות.",
+      "deadline": "04.11.2026",
+      "url": null
+    },
+    {
+      "grade": "ז׳–ח׳",
+      "type": "חוברת דיגיטלית נלווית",
+      "title": "משימות החובה וההערכה ב־ModEL — חוברת ומועדי הגשה",
+      "description": "תוספת אחת למדור זה בלבד: חוברת חדשה לאורך עם 36 שאלות, 43 צילומי מקור, חלונות הגשה לפי רגילה/עמ״ט, PDF להורדה ושיתוף מהמכשיר לאחר ביצוע ואישור. הריפו והמצגת המקוריים נשארים ללא שינוי.",
+      "deadline": "הערכה ח׳ עד 13.11.2026; ז׳ עד 20.11.2026. מועדי חובה אחרים טרם אומתו.",
+      "url": null
+    }
+  ],
+  "courses": [
+    {
+      "date": "18.11.2026",
+      "mode": "סינכרוני",
+      "topic": "כש־AI ותוכנית הלימודים המעודכנת נפגשים",
+      "description": "בחירת כלים דיגיטליים המקדמים חקר, הנמקה וייצוגים; תכנון רצף הוראה לכיתות ז׳–ח׳.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "02.12.2026",
+      "mode": "סינכרוני",
+      "topic": "גיאומטריה — זוויות וטרנספורמציות במישור",
+      "description": "פעילויות חווייתיות ואינטראקטיביות להמחשת מושגים גיאומטריים ופיתוח חשיבה מרחבית.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "09.12.2026",
+      "mode": "א־סינכרוני",
+      "topic": "עולם היצירה",
+      "description": "יצירת חומרים אינטראקטיביים לפי עדכון תוכנית הלימודים החדשה.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "16.12.2026",
+      "mode": "סינכרוני",
+      "topic": "כיצד מלמדים את תחום אי־הוודאות באמצעות תקשוב?",
+      "description": "כלים לאיסוף וניתוח נתונים, אוריינות נתונים, הסתברות וחשיבה ביקורתית.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "23.12.2026",
+      "mode": "סינכרוני",
+      "topic": "ספרי לימוד וגישות הוראה — מסביב לעולם",
+      "description": "בחינת גישות הוראה ומשימות במדינות מצטיינות והפקת תובנות לישראל.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "30.12.2026",
+      "mode": "סינכרוני",
+      "topic": "כיצד מקדמים הבנה אלגברית באמצעות כלים דיגיטליים?",
+      "description": "ייצוגים דינמיים למספרים מכוונים, ביטויים אלגבריים ומשוואות, תפיסות שגויות והתאמה לשונות.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "06.01.2027",
+      "mode": "א־סינכרוני",
+      "topic": "כלים דיגיטליים לטובת פדגוגיה",
+      "description": "שימוש בכלים דיגיטליים להשבחת ההוראה.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "13.01.2027",
+      "mode": "סינכרוני",
+      "topic": "יצירת דפי למידה אינטראקטיביים",
+      "description": "פיתוח מסלולי למידה ברמות שונות, תיווך, משוב והתאמה לקצב הלמידה.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "20.01.2027",
+      "mode": "סינכרוני",
+      "topic": "כיצד משתמשים בהערכה דיגיטלית לקידום למידה מותאמת?",
+      "description": "פיתוח פעילויות ודפי למידה אינטראקטיביים המעודדים חקר, התנסות והבנה מתמטית.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    },
+    {
+      "date": "27.01.2027",
+      "mode": "סינכרוני",
+      "topic": "ממלכת הפונקציה",
+      "description": "סביבת למידה אינטראקטיבית לחקר ייצוגים של פונקציות וחשיבה פונקציונלית.",
+      "syllabus": "https://drive.google.com/file/d/1LLzRQeJWN5BIKea3cfJy6EGFNdUice5D/view?usp=sharing"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "g7-10-gaming-up",
+      "grade": "ז׳",
+      "kind": "חובה",
+      "title": "\"גיימינג-אפ\" – נקודות במערכת צירים",
+      "questionCount": 4,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=619466",
+      "submission": [],
+      "missingDeadline": true,
+      "items": [
+        {
+          "id": "g7-10-gaming-up-intro",
+          "number": "0",
+          "label": "פתיחת המשימה",
+          "parts": [
+            {
+              "file": "captures/g7/10/gaming-up/intro.png",
+              "width": 1556,
+              "height": 1096
+            }
+          ]
+        },
+        {
+          "id": "g7-10-gaming-up-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/10/gaming-up/q1.png",
+              "width": 1556,
+              "height": 1610
+            }
+          ]
+        },
+        {
+          "id": "g7-10-gaming-up-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/10/gaming-up/q2.png",
+              "width": 1556,
+              "height": 1682
+            }
+          ]
+        },
+        {
+          "id": "g7-10-gaming-up-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/10/gaming-up/q3.png",
+              "width": 1556,
+              "height": 1513
+            }
+          ]
+        },
+        {
+          "id": "g7-10-gaming-up-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/10/gaming-up/q4.png",
+              "width": 1556,
+              "height": 1793
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g7-11-mazgan",
+      "grade": "ז׳",
+      "kind": "חובה",
+      "title": "מזגן על קיר הכיתה – זווית וסוגי זוויות",
+      "questionCount": 5,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=619467",
+      "submission": [],
+      "missingDeadline": true,
+      "items": [
+        {
+          "id": "g7-11-mazgan-intro",
+          "number": "0",
+          "label": "פתיחת המשימה",
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/intro.png",
+              "width": 1558,
+              "height": 810
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-video-p2",
+          "number": "0.5",
+          "label": "חלק מהסרטון – עמוד 2",
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/video-p2.png",
+              "width": 800,
+              "height": 449
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/q1.png",
+              "width": 1600,
+              "height": 1321
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/q2.png",
+              "width": 784,
+              "height": 1248
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/q3.png",
+              "width": 800,
+              "height": 880
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/q4.png",
+              "width": 520,
+              "height": 612
+            }
+          ]
+        },
+        {
+          "id": "g7-11-mazgan-q5",
+          "number": "5",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/11/mazgan/q5.png",
+              "width": 711,
+              "height": 912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g7-assessment-1",
+      "grade": "ז׳",
+      "kind": "הערכה",
+      "title": "משימת הערכה ראשונה כיתה ז",
+      "questionCount": 8,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=6266954",
+      "submission": [
+        {
+          "track": "רגילה",
+          "from": "2026-11-01",
+          "to": "2026-11-20",
+          "verification": "verified"
+        },
+        {
+          "track": "עמ״ט",
+          "from": "2026-10-26",
+          "to": "2026-11-20",
+          "verification": "requires-confirmation"
+        }
+      ],
+      "missingDeadline": false,
+      "items": [
+        {
+          "id": "g7-assessment-1-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q1.png",
+              "width": 639,
+              "height": 631
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q2.png",
+              "width": 1591,
+              "height": 1839
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q3-p1.png",
+              "width": 1038,
+              "height": 534
+            },
+            {
+              "file": "captures/g7/assessment-1/q3-p2.png",
+              "width": 1038,
+              "height": 722
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q4.png",
+              "width": 1235,
+              "height": 1862
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q5",
+          "number": "5",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q5.png",
+              "width": 1590,
+              "height": 999
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-info",
+          "number": "5.5",
+          "label": "מידע לשאלות 6–8",
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/info-6-8.png",
+              "width": 1136,
+              "height": 292
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q6",
+          "number": "6",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q6.png",
+              "width": 1574,
+              "height": 1248
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q7",
+          "number": "7",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q7.png",
+              "width": 1484,
+              "height": 1632
+            }
+          ]
+        },
+        {
+          "id": "g7-assessment-1-q8",
+          "number": "8",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g7/assessment-1/q8.png",
+              "width": 1332,
+              "height": 1632
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g8-10-tziyur-kir",
+      "grade": "ח׳",
+      "kind": "חובה",
+      "title": "ציור קיר (יחס, פרופורציה וקנה-מידה)",
+      "questionCount": 5,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=5335537",
+      "submission": [],
+      "missingDeadline": true,
+      "items": [
+        {
+          "id": "g8-10-tziyur-kir-intro",
+          "number": "0",
+          "label": "פתיחת המשימה",
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/intro.png",
+              "width": 1306,
+              "height": 315
+            }
+          ]
+        },
+        {
+          "id": "g8-10-tziyur-kir-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/q1.png",
+              "width": 800,
+              "height": 471
+            }
+          ]
+        },
+        {
+          "id": "g8-10-tziyur-kir-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/q2.png",
+              "width": 659,
+              "height": 921
+            }
+          ]
+        },
+        {
+          "id": "g8-10-tziyur-kir-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/q3.png",
+              "width": 1387,
+              "height": 469
+            }
+          ]
+        },
+        {
+          "id": "g8-10-tziyur-kir-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/q4.png",
+              "width": 708,
+              "height": 540
+            }
+          ]
+        },
+        {
+          "id": "g8-10-tziyur-kir-q5",
+          "number": "5",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/10/tziyur-kir/q5.png",
+              "width": 1146,
+              "height": 980
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g8-10-assessment-1",
+      "grade": "ח׳",
+      "kind": "הערכה",
+      "title": "משימת הערכה ראשונה כיתה ח",
+      "questionCount": 8,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=5712219",
+      "submission": [
+        {
+          "track": "רגילה",
+          "from": "2026-10-25",
+          "to": "2026-11-13",
+          "verification": "verified"
+        },
+        {
+          "track": "עמ״ט",
+          "from": "2026-10-25",
+          "to": "2026-11-13",
+          "verification": "verified"
+        }
+      ],
+      "missingDeadline": false,
+      "items": [
+        {
+          "id": "g8-10-assessment-1-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q1.png",
+              "width": 1406,
+              "height": 810
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q2.png",
+              "width": 1304,
+              "height": 1632
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q3.png",
+              "width": 1560,
+              "height": 2047
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q4.png",
+              "width": 1540,
+              "height": 1861
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q5",
+          "number": "5",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q5.png",
+              "width": 1590,
+              "height": 1880
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q6",
+          "number": "6",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q6.png",
+              "width": 1524,
+              "height": 287
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q7",
+          "number": "7",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q7.png",
+              "width": 1232,
+              "height": 506
+            }
+          ]
+        },
+        {
+          "id": "g8-10-assessment-1-q8",
+          "number": "8",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/assessment-1/q8.png",
+              "width": 1560,
+              "height": 929
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g8-11-noa",
+      "grade": "ח׳",
+      "kind": "חובה",
+      "title": "מודל הזמן של נועה (אחוזים)",
+      "questionCount": 6,
+      "sourceUrl": "https://moodlemoe.lms.education.gov.il/mod/quiz/view.php?id=6267273",
+      "submission": [],
+      "missingDeadline": true,
+      "items": [
+        {
+          "id": "g8-11-noa-intro",
+          "number": "0",
+          "label": "פתיחת המשימה",
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/intro.png",
+              "width": 1306,
+              "height": 315
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q1",
+          "number": "1",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q1.png",
+              "width": 1486,
+              "height": 999
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q2",
+          "number": "2",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q2.png",
+              "width": 1128,
+              "height": 1248
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q3",
+          "number": "3",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q3.png",
+              "width": 1214,
+              "height": 682
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q4",
+          "number": "4",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q4.png",
+              "width": 704,
+              "height": 398
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q5",
+          "number": "5",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q5.png",
+              "width": 939,
+              "height": 612
+            }
+          ]
+        },
+        {
+          "id": "g8-11-noa-q6",
+          "number": "6",
+          "label": null,
+          "parts": [
+            {
+              "file": "captures/g8/11/noa/q6.png",
+              "width": 1024,
+              "height": 629
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
