@@ -138,7 +138,7 @@ function cover(root, edition) {
   const ring = make("span", "emblem__ring");
   ring.setAttribute("aria-hidden", "true");
   const logo = make("img");
-  logo.src = "https://raw.githubusercontent.com/yanivmizrachiy/SIKUMSHVUI/main/weekly-system/historical/005/assets/logo.png";
+  logo.src = "./assets/district-logo.png";
   logo.alt = "סמל מחוז ירושלים";
   logo.loading = "eager";
   logo.addEventListener("error", () => {
