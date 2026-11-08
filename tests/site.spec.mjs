@@ -145,7 +145,12 @@ test("print preview renders real A4 portrait pages without unpublished photos", 
     if (/\/captures\//.test(request.url())) unauthorized.push(request.url());
   });
   await page.goto("/");
+  // The page's JSON is fetched asynchronously. Wait for all canonical sections before printing.
+  await expect(page.locator("#booklet .task-table-block")).toHaveCount(6);
+  await expect(page.locator("#coming tbody tr")).toHaveCount(11);
+  await expect(page.locator("#model .table-frame").first().locator("tbody tr")).toHaveCount(6);
   await page.emulateMedia({ media: "print" });
+  await page.evaluate(() => document.fonts.ready);
   const pdfBytes = await page.pdf({ preferCSSPageSize: true, printBackground: true });
   const document = await PDFDocument.load(pdfBytes);
   expect(document.getPageCount()).toBeGreaterThanOrEqual(5);
