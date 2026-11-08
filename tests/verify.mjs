@@ -36,6 +36,9 @@ test("complete unique sections and editorial accuracy", () => {
   assert.equal(data.curriculum.length, 10);
   assert.equal(data.model.length, 8);
   assert.ok(data.events.some(e => e.date === "10.11.2026" && e.time === "18:00" && e.title === "מפגש הדרכה שני לקראת מבחן תנופה" && e.url === null));
+  assert.equal(data.events.filter(e => e.emphasis === "priority").length, 1);
+  assert.match(app, /items\[i\]\?\.emphasis === "priority"/);
+  assert.match(css, /#coming tr\.event--priority td/);
   assert.equal(data.news[0].id, "tnufa");
   assert.equal(data.news[1].id, "training");
   assert.equal(data.news[2].id, "resources");
