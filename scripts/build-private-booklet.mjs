@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { chromium } from "@playwright/test";
 import { PDFDocument } from "pdf-lib";
 
@@ -23,19 +24,41 @@ const escape = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g,
   .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const date = iso => /^\d{4}-\d{2}-\d{2}$/.test(iso || "") ?
   iso.slice(8,10) + "." + iso.slice(5,7) + "." + iso.slice(0,4) : "מועד לא אומת";
-const origin = "https://raw.githubusercontent.com/" + data.sources.photographRepo + "/" +
-  sha + "/" + data.sources.photographBasePath;
+// Read the source Git tree at the exact pinned commit, not a website or working tree.
+ // The original repository is never checked out, modified, committed or pushed by this script.
+const originalRepo = process.env.SIKUM10_ORIGINAL_REPO;
+if (!originalRepo) throw Error("Set SIKUM10_ORIGINAL_REPO to the local read-only original Git repository");
+const sourceGit = resolve(originalRepo);
+const sourceRead = file => execFileSync("git",
+  ["-C", sourceGit, "show", sha + ":public/content/" + file],
+  { maxBuffer: 32 * 1024 * 1024, stdio: ["ignore","pipe","pipe"] });
+const manifestBytes = sourceRead("manifest.json");
+const blobSha = createHash("sha1").update(Buffer.concat([
+  Buffer.from("blob " + manifestBytes.length + "\0"),manifestBytes
+])).digest("hex");
+if (blobSha !== data.sources.photographManifestSha) throw Error("Canonical manifest SHA mismatch");
+const manifest = JSON.parse(manifestBytes.toString("utf8"));
+const manifestQuestions = new Map(manifest.questions.map(q => [q.id, q]));
+if (manifest.tasks.length !== 6 || manifest.questions.length !== 42) throw Error("Original manifest is incomplete");
+for (const task of data.tasks) {
+  const originTask = manifest.tasks.find(t=>t.id===task.id);
+  if (!originTask || originTask.title!==task.title ||
+      originTask.expectedQuestionCount!==task.questionCount)
+    throw Error("Task identity mismatch: " + task.id);
+  for (const item of task.items) {
+    const orig=manifestQuestions.get(item.id);
+    if (!orig || orig.taskId!==task.id ||
+        orig.parts.length!==item.parts.length ||
+        item.parts.some((p,i)=>p.file!==orig.parts[i].file))
+      throw Error("Photo assignment changed: " + item.id);
+  }
+}
 const results = Array(images.length);
 
 async function downloadOriginal(entry, i) {
   if (!/^[a-zA-Z0-9/_-]+\.png$/.test(entry.part.file))
     throw Error("Unexpected photograph pathname");
-  const response = await fetch(origin + entry.part.file, {
-    redirect: "error",
-    signal: AbortSignal.timeout(60000)
-  });
-  if (!response.ok) throw Error("Original photo download error " + response.status + " " + entry.part.file);
-  const bytes = Buffer.from(await response.arrayBuffer());
+  const bytes = sourceRead(entry.part.file);
   if (bytes.length < 2000 || bytes.subarray(0,8).toString("hex") !== "89504e470d0a1a0a")
     throw Error("Invalid source PNG: " + entry.part.file);
   const width = bytes.readUInt32BE(16);
@@ -75,23 +98,24 @@ book.push(page(
   '<p class="greeting">' + escape(data.edition.greeting) + '</p>',
   "hero"
 ));
-const rows = data.tasks.map(task => {
-  const deadlines = task.submission.length ?
-    [...new Set(task.submission.map(entry => date(entry.to)))].join(" / ") : "לא אומת";
-  const color = task.grade === "ז׳" ? "g7" : "g8";
+const rows = data.tasks.flatMap(task => {
+  const options=task.submission.length ? task.submission : [null];
+  const color=task.grade==="ז׳" ? "g7" : "g8";
   const link = /^https:\/\/moodlemoe\.lms\.education\.gov\.il\//.test(task.sourceUrl) ?
     '<a href="' + escape(task.sourceUrl) + '">למשימה</a>' : "";
-  return '<tr><td class="' + color + '">' + escape(task.grade) +
-    '</td><td>' + escape(task.title) + '</td><td>' + escape(task.kind) +
-    '</td><td>' + escape(deadlines) + '</td><td>' + link + '</td></tr>';
+  return options.map(option => '<tr><td class="' + color + '">' + escape(task.grade) +
+    '</td><td>' + escape(task.kind) + '</td><td>' + escape(task.title) +
+    '</td><td>' + escape(option?.track || "—") + '</td><td>' + date(option?.from) +
+    '</td><td><strong>' + date(option?.to) + '</strong></td><td>' + link + '</td></tr>');
 }).join("");
 book.push(page(
   '<div class="head"><p class="sup">ריכוז משימות ומועדי הגשה</p>' +
   '<h2>מה צריך להגיש ב־ModEL?</h2>' +
   '<p class="meta">כל שש המשימות המקוריות בפתיחת החוברת</p></div>' +
-  '<table><thead><tr><th style="width:9%">שכבה</th><th style="width:39%">משימה</th>' +
-  '<th style="width:14%">סוג</th><th style="width:23%">מועד סיום</th><th style="width:15%">קישור</th>' +
-  '</tr></thead><tbody>' + rows + '</tbody></table>' +
+  '<table><thead><tr><th style="width:8%">שכבה</th><th style="width:10%">סוג</th>' +
+  '<th style="width:30%">משימה</th><th style="width:12%">מסלול</th>' +
+  '<th style="width:14%">פתיחה</th><th style="width:14%">סיום</th>' +
+  '<th style="width:12%">ModEL</th></tr></thead><tbody>' + rows + '</tbody></table>' +
   '<div class="notice">המועדים המעודכנים חלים על משימת ההערכה הראשונה בלבד:' +
   ' כיתה ח׳ עד 13.11.2026, כיתה ז׳ עד 20.11.2026.' +
   ' לגבי ארבע משימות החובה אין מועד הגשה מאומת במקור.</div>' +
