@@ -85,3 +85,25 @@ test("do not embed images from earlier project in public source", () => {
   assert.ok(data.sources.photographRepo.includes("yaniv-raz-math-presentation"));
   assert.ok(!data.permissions.distributionApproved);
 });
+
+test("one private local booklet builder, no unsafe public artifact release", () => {
+  const root = new URL("../", import.meta.url);
+  const scripts = readdirSync(new URL("../scripts/", import.meta.url));
+  const actions = readdirSync(new URL("../.github/workflows/", import.meta.url));
+  assert.equal(scripts.filter(x => /booklet.*\.mjs$/.test(x)).length, 1);
+  assert.ok(scripts.includes("build-private-booklet.mjs"));
+  assert.ok(!actions.includes("build-booklet.yml"));
+  assert.ok(!actions.includes("private-booklet-review.yml"));
+  const generator = readFileSync(new URL("../scripts/build-private-booklet.mjs",import.meta.url), "utf8");
+  assert.match(generator, /SIKUM10_ORIGINAL_REPO/);
+  assert.match(generator, /sourceRead\(entry\.part\.file\)/);
+  assert.match(generator, /photographManifestSha/);
+  assert.match(generator, /data\.tasks\.flatMap\(task => \{/);
+  assert.match(generator, /sourceRead\("manifest\.json"\)/);
+  assert.ok(!generator.includes("raw.githubusercontent.com"));
+  assert.ok(!generator.includes("await fetch("));
+  assert.ok(!generator.includes("upload-artifact"));
+  assert.ok(!generator.includes("git push"));
+  assert.match(generator, /PDFDocument\.load/);
+  assert.match(generator, /document\.getPageCount\(\)/);
+});
