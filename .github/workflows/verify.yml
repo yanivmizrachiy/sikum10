@@ -20,8 +20,8 @@ jobs:
         run: node --test tests/verify.mjs
       - name: Verify absence of distributed capture media
         run: |
-          if find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.pdf' \) -not -path './.git/*' | grep . ; then
+          if find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.pdf' \) -not -path './.git/*' -not -path './assets/district-logo.png' | grep . ; then
             echo "Unapproved media files found in summary repository"
             exit 1
           fi
-          echo "No source photographs or PDFs are distributed by this repository"
+          echo "Only the approved district seal is in the repository; no source photographs or PDFs"
