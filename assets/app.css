@@ -99,3 +99,24 @@ tbody tr:nth-child(even){background:#f9fbfa}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 @page{size:A4 portrait;margin:14mm}
 @media print{html,body{background:white;color:#111!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;font-size:11pt}.masthead,.nav-strip,.skip,.booklet__actions,.action-print{display:none!important}.container{width:100%;max-width:none}.hero{background:white;break-after:page}.hero__grid{min-height:220mm;grid-template-columns:1fr 95px;padding:16mm 3mm}.hero h1{font-size:50pt}.emblem{width:95px}.emblem__ring{animation:none}.section{border:0;box-shadow:none;margin:0;break-inside:auto;break-before:page}.section__head{padding:6mm 0 2mm}.section__body{padding:4mm 0}.section__rule{margin-inline:0}.table-frame{overflow:visible;border:0}table{break-inside:auto}th{background:#e5ece9!important}thead{display:table-header-group}tr{break-inside:avoid}td,th{font-size:10pt}.news-card{break-inside:avoid}.news-grid{display:block}.news-card{margin-bottom:6mm}.booklet{border:0;padding:0}.task{break-inside:auto}.task summary{display:block}.task:not([open]) .task__body{display:block!important}.footer{display:none}.link{color:#10585d!important;background:transparent!important;border:0!important;padding:0;text-decoration:underline;font-size:10pt}.notice{break-inside:avoid}a[href]::after{content:none}}
+
+/* Mobile is a real semantic table too: combine related cells instead of squeezing five columns. */
+.table-frame--mobile{display:none}
+@media(max-width:730px){
+  .table-frame--desktop{display:none}
+  .table-frame--mobile{display:block}
+  .table-frame--mobile th,.table-frame--mobile td{
+    font-size:14px;line-height:1.58;padding:11px 7px;
+    overflow-wrap:break-word;word-break:normal;hyphens:auto
+  }
+  .table-frame--mobile th{font-size:12px}
+  .table-frame--mobile .subtle{font-size:12px}
+  .table-frame--mobile .table-link{font-size:13px;display:inline-block;margin-top:8px}
+}
+@media(max-width:380px){
+  .table-frame--mobile th,.table-frame--mobile td{font-size:13px;padding:9px 5px}
+}
+@media print{
+  .table-frame--desktop{display:block!important}
+  .table-frame--mobile{display:none!important}
+}
