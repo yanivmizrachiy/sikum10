@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/editions/2026-11-22/final/index.html" }
+  ]
+}
