@@ -14,16 +14,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check application and private-booklet generator syntax
-        run: |
-          node --check assets/app.js
-          node --check scripts/build-private-booklet.mjs
-      - name: Check source data and rendering contract
-        run: node --test tests/verify.mjs
-      - name: Verify absence of distributed capture media
-        run: |
-          if find . -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.pdf' \) -not -path './.git/*' -not -path './assets/district-logo.png' | grep . ; then
-            echo "Unapproved media files found in summary repository"
-            exit 1
-          fi
-          echo "Only the approved district seal is in the repository; no source photographs or PDFs"
+      - name: Static gate for the published edition
+        run: npm run check
